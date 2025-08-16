@@ -1,11 +1,19 @@
 import { AppError } from "../AppError.js";
 
-export class ConflictUserError extends AppError {
-  constructor(msg = 'conflict error') {
+export class ConflictEmailError extends AppError {
+  constructor(msg = 'conflict email error') {
     super(msg, 409);
     this.name = 'Conflict';
   }
 }
+
+export class ConflictUserError extends AppError {
+  constructor(msg = 'conflict user error') {
+    super(msg, 409);
+    this.name = 'Conflict';
+  }
+}
+
 
 export class UserNotFound extends AppError {
   constructor(msg = 'not found error') {
