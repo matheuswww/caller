@@ -3,6 +3,9 @@ import { db } from "../../configuration/mysql/conn.js"
 import type { signupRequest } from "../../validator/user/signup.js"
 import { ConflictUserError } from '../../error/user/userError.js';
 import type { RowDataPacket } from 'mysql2';
+import bcrypt from "bcrypt";
+
+export const bcryptRounds = 10
 
 export default async function signupRepository(user: signupRequest): Promise<string> {
   let query = "SELECT 1 FROM user WHERE email = ? LIMIT 1 "
@@ -11,11 +14,13 @@ export default async function signupRepository(user: signupRequest): Promise<str
   if (rows.length > 0) {
     throw new ConflictUserError();
   }
+  
+  const hashed = await bcrypt.hash(user.password, bcryptRounds)
 
   query = "INSERT INTO user (id, email, password, name) VALUES (?, ?, ?, ?)"
 
   const id = uuidv4()
-  await db.execute(query, [id, user.email, user.password, user.name])
+  await db.execute(query, [id, user.email, hashed, user.name])
 
   return id
 }
