@@ -1,10 +1,18 @@
 import { v4 as uuidv4 } from 'uuid';
 import { db } from "../../configuration/mysql/conn.js"
 import type { signupRequest } from "../../validator/user/signup.js"
+import { ConflictUserError } from '../../error/user/userError.js';
+import type { RowDataPacket } from 'mysql2';
 
 export default async function signupRepository(user: signupRequest): Promise<string> {
-  console.log("Init signupRepository")
-  const query = "INSERT INTO user (id, email, password, name) VALUES (?, ?, ?, ?)"
+  let query = "SELECT 1 FROM user WHERE email = ? LIMIT 1 "
+  const [rows] = await db.query<RowDataPacket[]>(query, [user.email])
+  
+  if (rows.length > 0) {
+    throw new ConflictUserError();
+  }
+
+  query = "INSERT INTO user (id, email, password, name) VALUES (?, ?, ?, ?)"
 
   const id = uuidv4()
   await db.execute(query, [id, user.email, user.password, user.name])

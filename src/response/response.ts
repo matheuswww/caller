@@ -11,7 +11,7 @@ interface errors {
   Message: string
 }
 
-export type messages =  "validation error" | "server error"
+export type messages =  "validation error" | "conflict error" | "server error"
 
 export default function response(message: string, code: number, errors: errors[] | null): response {
   return {
