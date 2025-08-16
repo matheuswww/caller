@@ -1,8 +1,8 @@
 import type { RowDataPacket } from "mysql2";
 import { db } from "../../configuration/mysql/conn.js";
-import type { signinRequest } from "../../validator/user/signin.js";
 import { UserInvalidPassword, UserNotFound } from "../../error/user/userError.js";
 import bcrypt from "bcrypt";
+import type { signinRequest } from "../../validator/user/signin.js";
 
 interface UserRow extends RowDataPacket {
   id: string;

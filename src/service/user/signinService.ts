@@ -3,5 +3,5 @@ import type { signinRequest } from "../../validator/user/signin.js";
 
 export default async function signinService(user: signinRequest): Promise<string> {
   console.log("Init signinService")
-  return signinRepository(user)
+  return await signinRepository(user)
 }

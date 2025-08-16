@@ -1,10 +1,10 @@
 import type { Request, Response } from "express"
 import signinService from "../../service/user/signinService.js"
-import { signinValidator } from "../../validator/user/signin.js"
 import response, { getErrors, type messages } from "../../response/response.js"
 import z from "zod"
 import { sendCookie } from "../../cookie/cookie.js"
 import { UserInvalidPassword, UserNotFound } from "../../error/user/userError.js"
+import { signinValidator } from "../../validator/user/signin.js"
 
 export default async function signinController(req: Request, res: Response) {
   console.log("Init signinController")

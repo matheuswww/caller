@@ -14,7 +14,6 @@ export class ConflictUserError extends AppError {
   }
 }
 
-
 export class UserNotFound extends AppError {
   constructor(msg = 'not found error') {
     super(msg, 400);

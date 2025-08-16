@@ -20,7 +20,7 @@ export function sendCookie(res: Response, id: string) {
   res.setHeader('Set-Cookie', serialized);
 }
 
-export function validateCookie(req: Request) {
+export function validateCookie(req: Request): string {
   const cookies = req.headers.cookie ? cookie.parse(req.headers.cookie) : {};
   const value = cookies[cookieName];
 
@@ -28,6 +28,8 @@ export function validateCookie(req: Request) {
 
   if (!value.startsWith('s:')) throw new CookieError();
 
-  const unsigned = signature.unsign(value.slice(2), secret);
-  if (!unsigned) throw new CookieError();
+  const id = signature.unsign(value.slice(2), secret);
+  if (!id) throw new CookieError();
+
+  return id;
 }

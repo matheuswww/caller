@@ -11,7 +11,7 @@ interface errors {
   Message: string
 }
 
-export type messages = "bad request" | "not found" | "validation error" | "conflict error" | "server error"
+export type messages = "invalid cookie" | "bad request" | "not found" | "validation error" | "conflict error" | "server error"
 
 export default function response(message: string, code: number, errors: errors[] | null): response {
   return {

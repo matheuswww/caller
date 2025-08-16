@@ -17,6 +17,7 @@ export default async function signupController(req: Request, res: Response) {
   } catch (error) {
     if (error instanceof z.ZodError) {
       const msg: messages = "validation error"
+      console.log(msg)
       const errors = getErrors(error.issues)
       console.log(msg)
       res.status(400).send(response(msg, 400, errors))
