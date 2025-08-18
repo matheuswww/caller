@@ -23,21 +23,15 @@ export default async function signinController(req: Request, res: Response) {
       return
     }
     if (error instanceof UserNotFound) {
-      const msg: messages = "not found"
+      const msg: messages = "email not found"
       console.log(msg)
-      res.status(404).send(response(msg, 404, [{
-        Field: "email",
-        Message: "email not found"
-      }]))
+      res.status(404).send(response(msg, 404, null))
       return
     }
     if (error instanceof UserInvalidPassword) {
-      const msg: messages = "bad request"
+      const msg: messages = "invalid password"
       console.log(msg)
-      res.status(400).send(response(msg, 400, [{
-        Field: "password",
-        Message: "invalid password"
-      }]))
+      res.status(400).send(response(msg, 400, null))
       return
     }
     console.error(error)

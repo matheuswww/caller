@@ -24,21 +24,15 @@ export default async function signupController(req: Request, res: Response) {
       return
     }
     if (error instanceof ConflictEmailError) {
-      const msg: messages = "conflict error"
+      const msg: messages = "email already exists"
       console.log(msg)
-      res.status(409).send(response(msg, 409, [{
-        Field: "email",
-        Message: "email already exists"
-      }]))
+      res.status(409).send(response(msg, 409, null))
       return
     }
     if (error instanceof ConflictUserError) {
-      const msg: messages = "conflict error"
+      const msg: messages = "user already exists"
       console.log(msg)
-      res.status(409).send(response(msg, 409, [{
-        Field: "user",
-        Message: "user already exists"
-      }]))
+      res.status(409).send(response(msg, 409, null))
       return
     }
     console.error(error)

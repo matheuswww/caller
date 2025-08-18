@@ -32,6 +32,6 @@ export default async function addFriendRepository(user_id: string, friend: strin
     throw new AlreadyFriends()
   }
 
-  query = "INSERT INTO friend (user_id, friend_id, accepted) VALUES (?, ?, ?)"
-  await db.execute(query, [ user_id, friend_id, false ])
+  query = "INSERT INTO friend (user_id, friend_id) VALUES (?, ?)"
+  await db.execute(query, [ user_id, friend_id ])
 }

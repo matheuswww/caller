@@ -13,3 +13,17 @@ export class AlreadyFriends extends AppError {
     this.name = 'AlreadyFriends';
   }
 }
+
+export class FriendshipNotFoundError extends AppError {
+  constructor(msg = 'friendship not found error') {
+    super(msg, 404);
+    this.name = 'NotFound';
+  }
+}
+
+export class CannotDeleteError extends AppError {
+  constructor(msg = 'cannot delete error') {
+    super(msg, 400);
+    this.name = 'CannotDelete';
+  }
+}
