@@ -1,10 +1,14 @@
 import type { RowDataPacket } from "mysql2"
 import { db } from "../../configuration/mysql/conn.js"
 import { UserNotFound } from "../../error/user/userError.js"
-import { AlreadyFriends, SelfFriendError } from "../../error/friend/friendError.js"
+import { AlreadyFriends, AlreadySent, SelfFriendError } from "../../error/friend/friendError.js"
 
 interface UserRow extends RowDataPacket {
   id: string
+}
+
+interface FriendRow extends RowDataPacket {
+  accepted: boolean
 }
 
 export default async function addFriendRepository(user_id: string, friend: string) {
@@ -25,11 +29,18 @@ export default async function addFriendRepository(user_id: string, friend: strin
     throw new SelfFriendError()
   }
 
-  query = "SELECT 1 FROM friend WHERE (user_id = ? AND friend_id = ?) OR (user_id = ? AND friend_id = ?)"
-  const [rows_2] = await db.query<RowDataPacket[]>(query, [user_id, friend_id, friend_id, user_id])
+  query = "SELECT accepted FROM friend WHERE (user_id = ? AND friend_id = ?) OR (user_id = ? AND friend_id = ?)"
+  const [rows_2] = await db.query<FriendRow[]>(query, [user_id, friend_id, friend_id, user_id])
   
   if (rows_2.length > 0) {
-    throw new AlreadyFriends()
+    const row = rows_2[0]
+    if(row?.accepted === undefined) {
+      throw Error()
+    }
+    if(row.accepted) {
+      throw new AlreadyFriends()
+    }
+    throw new AlreadySent()
   }
 
   query = "INSERT INTO friend (user_id, friend_id) VALUES (?, ?)"

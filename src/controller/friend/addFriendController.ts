@@ -6,7 +6,7 @@ import z from "zod"
 import response, { getErrors, type messages } from "../../response/response.js"
 import { CookieError } from "../../cookie/cookie-customError.js"
 import { UserNotFound } from "../../error/user/userError.js"
-import { AlreadyFriends, SelfFriendError } from "../../error/friend/friendError.js"
+import { AlreadyFriends, AlreadySent, SelfFriendError } from "../../error/friend/friendError.js"
 
 export default async function addFriendController(req: Request, res: Response) {
   console.log("Init addFriendController")
@@ -43,6 +43,12 @@ export default async function addFriendController(req: Request, res: Response) {
     }
     if (error instanceof AlreadyFriends) {
       const msg: messages = "you are already friends"
+      console.log(msg)
+      res.status(400).send(response(msg, 400, null))
+      return
+    }
+    if (error instanceof AlreadySent) {
+      const msg: messages = "friend request already sent"
       console.log(msg)
       res.status(400).send(response(msg, 400, null))
       return

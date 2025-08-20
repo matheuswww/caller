@@ -1,9 +1,11 @@
 import type { Express } from 'express-serve-static-core'
 import addFriendController from '../../controller/friend/addFriendController.js'
 import friendShipActionController from '../../controller/friend/friendshipActionController.js'
+import getFriendsController from '../../controller/friend/getFriendsController.js'
 
 export default function initFriendRoutes(app: Express) {
   console.log("Init initFriendRoutes")
   app.post('/friend/addFriend', addFriendController)
   app.patch('/friend/friendshipAction', friendShipActionController)
+  app.get("/friend/getFriends", getFriendsController)
 }

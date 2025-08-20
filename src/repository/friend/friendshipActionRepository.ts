@@ -1,6 +1,6 @@
 import type { RowDataPacket } from "mysql2"
 import { db } from "../../configuration/mysql/conn.js"
-import { CannotDeleteError, FriendshipNotFoundError } from "../../error/friend/friendError.js"
+import { FriendshipNotFoundError } from "../../error/friend/friendError.js"
 
 export default async function friendshipActionRepository(user_id_from_cookie: string, friend_id: string, action: "accept" | "reject" | "delete") {
   switch (action) {
@@ -8,7 +8,7 @@ export default async function friendshipActionRepository(user_id_from_cookie: st
       await updateAccepted(user_id_from_cookie, friend_id, true)
       break
     case "reject":
-      await updateAccepted(user_id_from_cookie, friend_id, false)
+      await deleteFriendship(user_id_from_cookie, friend_id)
       break
     case "delete":
       await deleteFriendship(user_id_from_cookie, friend_id)
@@ -19,8 +19,8 @@ export default async function friendshipActionRepository(user_id_from_cookie: st
 }
 
 async function updateAccepted(user_id_from_cookie: string, friend_id: string, accept: boolean) {
-  let query = `SELECT 1 FROM friend WHERE user_id = ? AND friend_id = ? AND accepted IS ${accept ? "FALSE" : "TRUE"}`
-  const [rows] = await db.query<RowDataPacket[]>(query, [friend_id, user_id_from_cookie, user_id_from_cookie, friend_id])
+  let query = "SELECT 1 FROM friend WHERE user_id = ? AND friend_id = ? AND accepted IS NULL"
+  const [rows] = await db.query<RowDataPacket[]>(query, [friend_id, user_id_from_cookie])
   if (rows.length == 0) {
     throw new FriendshipNotFoundError()
   }
@@ -31,25 +31,21 @@ async function updateAccepted(user_id_from_cookie: string, friend_id: string, ac
 interface friendRows extends RowDataPacket {
   user_id: string
   friend_id: string
-  accepted: boolean
+  accepted: boolean | null
 }
 
 async function deleteFriendship(user_id_from_cookie: string, friend_id: string) {
-  let query = "SELECT user_id, friend_id, accepted FROM friend WHERE (user_id = ? AND friend_id = ?) || (user_id = ? AND friend_id = ?)"
+  let query = "SELECT user_id, friend_id, accepted FROM friend WHERE (user_id = ? AND friend_id = ?) OR (user_id = ? AND friend_id = ?)"
   const [rows] = await db.query<friendRows[]>(query, [user_id_from_cookie, friend_id, friend_id, user_id_from_cookie])
   if (rows.length == 0) {
     throw new FriendshipNotFoundError()
   }
 
   const row = rows[0]
-  if (!row?.user_id || !row.friend_id || row.accepted == undefined) {
+  if (!row?.user_id || !row.friend_id || row.accepted === undefined) {
     throw new Error()
   }
 
-  if(!row.accepted && row.user_id != user_id_from_cookie) {
-    throw new CannotDeleteError()
-  }
-
-  query = "DELETE FROM friend WHERE (user_id = ? AND friend_id = ?) || (user_id = ? AND friend_id = ?)"
+  query = "DELETE FROM friend WHERE (user_id = ? AND friend_id = ?) OR (user_id = ? AND friend_id = ?)"
   await db.execute(query, [user_id_from_cookie, friend_id, friend_id, user_id_from_cookie])
 }

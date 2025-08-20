@@ -5,7 +5,7 @@ import friendshipActionService from "../../service/friend/addFriendshipActionSer
 import z from "zod"
 import response, { getErrors, type messages } from "../../response/response.js"
 import { CookieError } from "../../cookie/cookie-customError.js"
-import { CannotDeleteError, FriendshipNotFoundError } from "../../error/friend/friendError.js"
+import { FriendshipNotFoundError } from "../../error/friend/friendError.js"
 
 export default async function friendShipActionController(req: Request, res: Response) {
   try {
@@ -30,12 +30,6 @@ export default async function friendShipActionController(req: Request, res: Resp
     }
     if (error instanceof FriendshipNotFoundError) {
       const msg: messages = "friendship not found"
-      console.log(msg)
-      res.status(400).send(response(msg, 400, null))
-      return
-    }
-    if (error instanceof CannotDeleteError) {
-      const msg: messages = "you cannot delete"
       console.log(msg)
       res.status(400).send(response(msg, 400, null))
       return
