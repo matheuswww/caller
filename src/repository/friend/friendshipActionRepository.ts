@@ -1,6 +1,12 @@
 import type { RowDataPacket } from "mysql2"
 import { db } from "../../configuration/mysql/conn.js"
 import { FriendshipNotFoundError } from "../../error/friend/friendError.js"
+import createNotificationRepository from "../notification/createNotificationRepository.js"
+import updateData from "../../websocket/notification/updateData.js"
+
+interface UserRow extends RowDataPacket {
+  name: string
+}
 
 export default async function friendshipActionRepository(user_id_from_cookie: string, friend_id: string, action: "accept" | "reject" | "delete") {
   switch (action) {
@@ -20,12 +26,29 @@ export default async function friendshipActionRepository(user_id_from_cookie: st
 
 async function updateAccepted(user_id_from_cookie: string, friend_id: string, accept: boolean) {
   let query = "SELECT 1 FROM friend WHERE user_id = ? AND friend_id = ? AND accepted IS NULL"
-  const [rows] = await db.query<RowDataPacket[]>(query, [friend_id, user_id_from_cookie])
-  if (rows.length == 0) {
+  const [rows_1] = await db.query<RowDataPacket[]>(query, [friend_id, user_id_from_cookie])
+  if (rows_1.length == 0) {
     throw new FriendshipNotFoundError()
   }
   query = "UPDATE friend SET accepted = ? WHERE user_id = ? AND friend_id = ?"
   await db.execute(query, [accept, friend_id, user_id_from_cookie])
+
+  query = "SELECT name FROM user WHERE id = ?"
+  const [rows_2] = await db.query<UserRow[]>(query, [ user_id_from_cookie ])
+  const row_2 = rows_2[0]
+  if(!row_2) {
+    throw new Error()
+  }
+  const [rows_3] = await db.query<UserRow[]>(query, [ friend_id ])
+  const row_3 = rows_3[0]
+  if(!row_3) {
+    throw new Error()
+  }
+
+  createNotificationRepository(user_id_from_cookie, `you and ${row_3.name} are now friends`)
+  createNotificationRepository(friend_id, `you and ${row_2.name} are now friends`)
+  updateData(user_id_from_cookie)
+  updateData(friend_id)
 }
 
 interface friendRows extends RowDataPacket {
@@ -48,4 +71,6 @@ async function deleteFriendship(user_id_from_cookie: string, friend_id: string) 
 
   query = "DELETE FROM friend WHERE (user_id = ? AND friend_id = ?) OR (user_id = ? AND friend_id = ?)"
   await db.execute(query, [user_id_from_cookie, friend_id, friend_id, user_id_from_cookie])
+  updateData(user_id_from_cookie)
+  updateData(friend_id)
 }
