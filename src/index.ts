@@ -4,8 +4,8 @@ import initUserRoutes from './router/user/initUserRouter.js'
 import { createMysqlConn } from './configuration/mysql/conn.js'
 import initFriendRoutes from './router/friend/initFriendRouter.js'
 import { WebSocketServer, WebSocket } from "ws";
-import notification from './websocket/notification/notification.js'
 import initNotificationRouter from './router/notification/initNotificationRouter.js'
+import WSConnection from './websocket/notification/WSconnection.js'
 
 
 const app = express()
@@ -15,7 +15,7 @@ const wss = new WebSocketServer({ server });
 app.use(express.json())
 
 createMysqlConn()
-notification(wss)
+WSConnection(wss)
 initUserRoutes(app)
 initFriendRoutes(app)
 initNotificationRouter(app)

@@ -3,7 +3,7 @@ import getFriendsRepository from "../../repository/friend/getFriendsRepository.j
 import getNotificationsRepository from "../../repository/notification/getNotifications.js";
 import type getFriendsResponse from "../../response/friends/getFriends/getFriends.js";
 import type getNotifications from "../../response/notification/getNotifications.js";
-import { clients } from "./notification.js";
+import { clients } from "./WSconnection.js";
 
 interface data {
   notifications: getNotifications[]
