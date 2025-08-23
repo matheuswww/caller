@@ -69,27 +69,27 @@ export default function SignupForm() {
           className="
             bg-gray-950 rounded-md p-10 border-amber-50
             flex flex-col w-full m-auto max-w-lg relative
-            [&>input]:p-2 [&>input]:rounded-md [&>input]:bg-purple-900 [&>input]:text-amber-50 
-            [&>input]:focus:outline-none [&>input]:focus:ring-2 [&>input]:focus:ring-amber-50
+            [&_input]:p-2 [&_input]:rounded-md [&_input]:bg-purple-900 [&_input]:text-amber-50 
+            [&_input]:focus:outline-none [&_input]:focus:ring-2 [&_input]:focus:ring-amber-50
             [&>label]:text-amber-50 [&>label]:mt-3
           "
         >
           <h1 className="text-amber-50 text-5xl font-bold absolute -top-20 left-1/2 -translate-x-1/2">Signup</h1>
           
           <label htmlFor="name">Name</label>
-          <input id="name" {...register("name")} />
+          <input placeholder="Seu nome" id="name" {...register("name")} />
           {errors.name && <p className="text-red-400 font-bold mt-2">{errors.name.message}</p>}
 
           <label htmlFor="user">User</label>
-          <input id="user" {...register("user")} />
+          <input placeholder="Seu usuário" id="user" {...register("user")} />
           {errors.user && <p className="text-red-400 font-bold mt-2">{errors.user.message}</p>}
 
           <label htmlFor="email">Email</label>
-          <input id="email" {...register("email")} />
+          <input placeholder="Seu email" id="email" {...register("email")} />
           {errors.email && <p className="text-red-400 font-bold mt-2">{errors.email.message}</p>}
 
           <label htmlFor="password">Password</label>
-          <PasswordInput register={register} name="password" />
+          <PasswordInput register={register} name="password" placeholder="Sua senha" />
           {errors.password && <p className="text-red-400 font-bold mt-2">{errors.password.message}</p>}
           {error && <p className="text-red-400 font-bold mt-7">{error}</p>}
           <Link href="/signin" className="text-amber-50 mt-3 underline">Já possui uma conta?</Link>
