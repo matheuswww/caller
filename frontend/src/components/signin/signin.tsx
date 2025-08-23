@@ -1,22 +1,16 @@
 "use client"
 
-import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
-import signup, { ConfictEmailError, ConfictUserError } from "@/lib/api/user/signup";
-import { useState } from "react";
-import { useAlertSystem } from "../alert/alert";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import z from "zod";
+import { useAlertSystem } from "../alert/alert";
+import signin, { EmailNotFound, InvalidPassword } from "@/lib/api/user/signin";
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
-export const signupSchema = z.object({
-  name: z.string()
-    .min(1, { message: "Name is required" })
-    .max(20, { message: "Name must be at most 20 characters long" }),
-  user: z.string()
-    .min(1, { message: "User is required" })
-    .max(20, { message: "User must be at most 20 characters long" }),
+export const signinSchema = z.object({
   email: z.string()
     .regex(emailRegex, { message: "Invalid email format" })
     .max(255, { message: "Email must be at most 255 characters long" }),
@@ -25,35 +19,35 @@ export const signupSchema = z.object({
     .max(60, { message: "Password must be at most 60 characters long" }),
 })
 
-type SignupData = z.infer<typeof signupSchema>;
+type SigninData = z.infer<typeof signinSchema>;
 
-export default function SignupForm() {
-  const { register, handleSubmit, formState: { errors } } = useForm<SignupData>({
-    resolver: zodResolver(signupSchema),
+export default function SigninForm() {
+  const { register, handleSubmit, formState: { errors } } = useForm<SigninData>({
+    resolver: zodResolver(signinSchema),
   });
   const router = useRouter()
   const [load, setLoad] = useState<boolean>(false)
   const [alertComponent, addAlert] = useAlertSystem()
   const [error, setError] = useState<string | null>(null)
 
-  const onSubmit = async (data: SignupData) => {
+  const onSubmit = async (data: SigninData) => {
     try {
       setLoad(true)
-      await signup(data)
+      await signin(data)
       router.push("/")
     } catch (error) {
-      if (error instanceof ConfictEmailError) {
-        setError("This email already is in use")
+      if (error instanceof EmailNotFound) {
+        setError("Email not found")
         setLoad(false)
         return
       }
-      if (error instanceof ConfictUserError) {
+      if (error instanceof InvalidPassword) {
+        setError("Invalid password")
         setLoad(false)
-        setError("This user already is in use")
         return
       }
-      setLoad(false)
       addAlert("Parece que houve um erro, tente novamente", "red", 2000)
+      setLoad(false)
       console.log(error)
     }
   };
@@ -72,16 +66,7 @@ export default function SignupForm() {
             [&>label]:text-amber-50 [&>label]:mt-3
           "
         >
-          <h1 className="text-amber-50 text-5xl font-bold absolute -top-20 left-1/2 -translate-x-1/2">Signup</h1>
-          
-          <label htmlFor="name">Name</label>
-          <input id="name" {...register("name")} />
-          {errors.name && <p className="text-red-400 font-bold mt-2">{errors.name.message}</p>}
-
-          <label htmlFor="user">User</label>
-          <input id="user" {...register("user")} />
-          {errors.user && <p className="text-red-400 font-bold mt-2">{errors.user.message}</p>}
-
+          <h1 className="text-amber-50 text-5xl font-bold absolute -top-20 left-1/2 -translate-x-1/2">Signin</h1>
           <label htmlFor="email">Email</label>
           <input id="email" {...register("email")} />
           {errors.email && <p className="text-red-400 font-bold mt-2">{errors.email.message}</p>}
