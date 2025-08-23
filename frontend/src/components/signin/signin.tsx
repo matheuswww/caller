@@ -8,6 +8,7 @@ import z from "zod";
 import { useAlertSystem } from "../alert/alert";
 import signin, { EmailNotFound, InvalidPassword } from "@/lib/api/user/signin";
 import Link from "next/link";
+import PasswordInput from "../password/password";
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
@@ -62,8 +63,8 @@ export default function SigninForm() {
           className="
             bg-gray-950 rounded-md p-10 border-amber-50
             flex flex-col w-full m-auto max-w-lg relative
-            [&>input]:p-2 [&>input]:rounded-md [&>input]:bg-purple-900 [&>input]:text-amber-50 
-            [&>input]:focus:outline-none [&>input]:focus:ring-2 [&>input]:focus:ring-amber-50
+            [&_input]:p-2 [&_input]:rounded-md [&_input]:bg-purple-900 [&_input]:text-amber-50 
+            [&_input]:focus:outline-none [&_input]:focus:ring-2 [&_input]:focus:ring-amber-50
             [&>label]:text-amber-50 [&>label]:mt-3
           "
         >
@@ -73,7 +74,7 @@ export default function SigninForm() {
           {errors.email && <p className="text-red-400 font-bold mt-2">{errors.email.message}</p>}
 
           <label htmlFor="password">Password</label>
-          <input type="password" id="password" {...register("password")} />
+          <PasswordInput register={register} name="password" />
           {errors.password && <p className="text-red-400 font-bold mt-2">{errors.password.message}</p>}
           {error && <p className="text-red-400 font-bold mt-7">{error}</p>}
           <Link href="/signup" className="text-amber-50 mt-3 underline">Não possui uma conta?</Link>

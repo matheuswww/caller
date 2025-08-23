@@ -8,6 +8,7 @@ import { useState } from "react";
 import { useAlertSystem } from "../alert/alert";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import PasswordInput from "../password/password";
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
@@ -88,7 +89,7 @@ export default function SignupForm() {
           {errors.email && <p className="text-red-400 font-bold mt-2">{errors.email.message}</p>}
 
           <label htmlFor="password">Password</label>
-          <input type="password" id="password" {...register("password")} />
+          <PasswordInput register={register} name="password" />
           {errors.password && <p className="text-red-400 font-bold mt-2">{errors.password.message}</p>}
           {error && <p className="text-red-400 font-bold mt-7">{error}</p>}
           <Link href="/signin" className="text-amber-50 mt-3 underline">Já possui uma conta?</Link>
