@@ -7,8 +7,8 @@ interface response {
 }
 
 interface errors {
-  Field: string
-  Message: string
+  field: string
+  message: string
 }
 
 export type messages = "invalid cookie" | "validation error" | string
@@ -24,8 +24,8 @@ export default function response(message: string, code: number, errors: errors[]
 export function getErrors(errors: $ZodIssue[]): errors[] {
   const res: errors[] = errors.map((e) => {
     return {
-      Field: typeof e.path[0] == "string" ? e.path[0] : "",
-      Message: e.message
+      field: typeof e.path[0] == "string" ? e.path[0] : "",
+      message: e.message
     }
   })
   return res
