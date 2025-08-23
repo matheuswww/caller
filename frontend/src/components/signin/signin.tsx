@@ -7,6 +7,7 @@ import { useForm } from "react-hook-form";
 import z from "zod";
 import { useAlertSystem } from "../alert/alert";
 import signin, { EmailNotFound, InvalidPassword } from "@/lib/api/user/signin";
+import Link from "next/link";
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
@@ -75,6 +76,7 @@ export default function SigninForm() {
           <input type="password" id="password" {...register("password")} />
           {errors.password && <p className="text-red-400 font-bold mt-2">{errors.password.message}</p>}
           {error && <p className="text-red-400 font-bold mt-7">{error}</p>}
+          <Link href="/signup" className="text-amber-50 mt-3 underline">Não possui uma conta?</Link>
           <div className="relative mt-8">
             <button
               type="submit"
