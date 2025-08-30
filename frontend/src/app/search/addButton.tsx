@@ -25,6 +25,7 @@ export default function AddButton({ user, addAlert }:addButtonProps) {
       sentSent(true)
     } catch (error) {
       if (error instanceof AlreadySent) {
+        addAlert("você já enviou uma solicitação de amizade para este usuário", "yellow", 1800)
         return
       }
       if (error instanceof InvalidCookie) {
