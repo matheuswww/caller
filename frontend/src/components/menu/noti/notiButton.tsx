@@ -1,5 +1,6 @@
 "use client"
 
+import { getFriendsResponse } from "@/lib/api/friend/getFriends"
 import Image from "next/image"
 import { Dispatch, RefObject, SetStateAction, useEffect, useRef } from "react"
 
@@ -7,9 +8,10 @@ interface props {
   open: boolean
   setOpen: Dispatch<SetStateAction<boolean>>
   popupRef: RefObject<HTMLDivElement | null>
+  getFriendsResponse: getFriendsResponse | null
 }
 
-export default function NotiButton({ open, setOpen, popupRef }:props) {
+export default function NotiButton({ open, setOpen, popupRef, getFriendsResponse }:props) {
   const buttonRef = useRef<HTMLButtonElement>(null)
 
   useEffect(() => {
@@ -41,9 +43,9 @@ export default function NotiButton({ open, setOpen, popupRef }:props) {
 
   return (
     <>
-      <button  ref={buttonRef} onClick={handleClick} className="cursor-pointer p-2 bg-purple-950 w-10 h-10 rounded-full mb-5 mt-14 relative hover:bg-purple-900">
+      <button aria-label="open notifications" ref={buttonRef} onClick={handleClick} className="cursor-pointer p-2 bg-purple-950 w-10 h-10 rounded-full mb-5 mt-14 relative hover:bg-purple-900">
         <Image src="/img/noti.png" alt="lupa" width={24} height={24} className="mb-1" />
-        <span className="flex justify-center items-center absolute bg-red-400 w-6 h-6 text-center rounded-full text-white font-bold -top-2 left-6 text-[.9rem]">3</span>
+        {getFriendsResponse?.requests && getFriendsResponse.requests.length > 0 && <span className="flex justify-center items-center absolute bg-red-400 w-6 h-6 text-center rounded-full text-white font-bold -top-2 left-6 text-[.9rem]">{ getFriendsResponse.requests.length }</span>}
       </button>
     </>
   )
