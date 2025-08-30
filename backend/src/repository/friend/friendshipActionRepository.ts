@@ -1,7 +1,6 @@
 import type { RowDataPacket } from "mysql2"
 import { db } from "../../configuration/mysql/conn.js"
 import { FriendshipNotFoundError } from "../../error/friend/friendError.js"
-import createNotificationRepository from "../notification/createNotificationRepository.js"
 import updateData from "../../websocket/notification/updateData.js"
 
 interface UserRow extends RowDataPacket {
@@ -45,8 +44,6 @@ async function updateAccepted(user_id_from_cookie: string, friend_id: string, ac
     throw new Error()
   }
 
-  createNotificationRepository(user_id_from_cookie, `you and ${row_3.name} are now friends`)
-  createNotificationRepository(friend_id, `you and ${row_2.name} are now friends`)
   updateData(user_id_from_cookie)
   updateData(friend_id)
 }
