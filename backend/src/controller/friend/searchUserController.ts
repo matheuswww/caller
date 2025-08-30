@@ -3,13 +3,16 @@ import type { messages } from "../../response/response.js"
 import response, { getErrors } from "../../response/response.js"
 import z from "zod"
 import SearchUserService from "../../service/user/searchUserService.js"
-import { searchUserValidator } from "../../validator/user/searchUserController.js"
+import { searchUserValidator } from "../../validator/user/searchUser.js"
 
 export default async function searchUserController(req: Request, res: Response) {
   console.log("Init searchUserController")
   try {
-    const user = searchUserValidator.parse(req.body)
-    const userResponse = await SearchUserService(user.user)
+   const user = req.query["user"];
+    const userRequest = searchUserValidator.parse({
+      user,
+    })
+    const userResponse = await SearchUserService(userRequest.user)
     if(userResponse.length == 0) {
       res.status(404).send()
       return

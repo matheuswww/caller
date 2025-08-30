@@ -11,9 +11,9 @@ interface user extends RowDataPacket {
 export default async function SearchUserRepository(user: string): Promise<searchUserResponse[]> {
   console.log("Init SearchUserRepository")
   
-  const query = "SELECT id, name, user FROM user WHERE user LIKE CONCAT('%', ?, '%')";
+  const query = "SELECT id, name, user FROM user WHERE user LIKE CONCAT('%', ?, '%') OR name LIKE CONCAT('%', ?, '%') LIMIT 10";
 
-  const [rows] = await db.query<user[]>(query, user)
+  const [rows] = await db.query<user[]>(query, [user, user])
   const users: searchUserResponse[] = []
   for (let row of rows) {
     users.push({
