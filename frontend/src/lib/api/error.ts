@@ -6,3 +6,10 @@ export class AppError extends Error {
     this.status = status
   }
 }
+
+export class InvalidCookie extends AppError {
+  constructor(message = "Invalid cookie") {
+    super(message, 409)
+    this.name = "InvalidCookie"
+  }
+}
