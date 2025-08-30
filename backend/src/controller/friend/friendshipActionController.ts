@@ -12,7 +12,6 @@ export default async function friendShipActionController(req: Request, res: Resp
     const user_id = validateCookie(req)
     const data = friendshipActionValidator.parse(req.body)
     await friendshipActionService(user_id, data.friend_id, data.action)
-    console.log("")
     res.status(200).send()
   } catch (error) {
     if (error instanceof z.ZodError) {
