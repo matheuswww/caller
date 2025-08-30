@@ -2,6 +2,7 @@ import z from "zod"
 
 export interface friendShipAction {
   friend_id: string
+  action: "accept" | "reject" | "delete"
 }
 
 export const friendshipActionValidator = z.object({
