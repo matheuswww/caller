@@ -1,8 +1,8 @@
 "use client"
 
 import Menu from "../menu/menu"
-import Search from "@/app/search/search"
-import Call from "@/app/call/call"
+import Search from "@/components/search/search"
+import Call from "@/components/call/call"
 import { useState } from "react"
 import { useAlertSystem } from "../alert/alert"
 import { getFriendsResponse } from "@/lib/api/friend/getFriends"
