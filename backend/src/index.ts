@@ -12,7 +12,7 @@ const server = createServer(app);
 const wss = new WebSocketServer({ server });
 
 app.use(cors({
-  origin: "http://localhost:3000",
+  origin: "https://192.168.0.106:3443",
   credentials: true
 }));
 

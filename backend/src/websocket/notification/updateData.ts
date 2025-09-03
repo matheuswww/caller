@@ -4,6 +4,7 @@ import type getFriendsResponse from "../../response/friends/getFriends/getFriend
 import { clients } from "./WSconnection.js";
 
 interface data {
+  type: string
   friends: getFriendsResponse
 }
 
@@ -14,6 +15,7 @@ export default async function updateData(userId: string) {
     if (!ws || ws.readyState !== WebSocket.OPEN) return;
     const friends = await getFriendsRepository(userId)
     const res: data =  {
+      type: "data",
       friends: friends,
     }
     ws.send(JSON.stringify(res))

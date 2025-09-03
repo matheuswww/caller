@@ -3,88 +3,88 @@ import WebSocket, { type Server } from "ws"
 import { validateWSCookie } from "../../cookie/cookie.js"
 import { CookieError } from "../../cookie/cookie-customError.js"
 import type { messages } from "../../response/response.js"
-import friendShipExists from "../../repository/friend/friendshipExists.js"
 import responseWs from "./responseWs.js"
+import getUserByFriend from "../../repository/friend/getUserByFriendRepository.js"
 
 export const clients = new Map<string, WebSocket>()
 
 export default function WSConnection(wss: Server<typeof WebSocket, typeof IncomingMessage>) {
   wss.on("connection", (ws, req) => {
-    try {
-      const userId = validateWSCookie(req)
-      clients.set(userId, ws)
-      console.log("Connected: ", userId)
-
-      ws.on("message", async (msg) => {
-        try {
-          const data = JSON.parse(msg.toString())
-          switch (data.type) {
-            case "offer": {
-              const val = friendShipExists(userId, data.friend_id)
-              if (!val) {
-                ws.send(JSON.stringify(responseWs("friendship not found")))
-                return
-              }
-              const targetWS = clients.get(data.friend_id)
-              if (targetWS && targetWS.readyState === WebSocket.OPEN) {
-                targetWS.send(JSON.stringify({
-                  type: "offer",
-                  sdp: data.sdp,
-                  from: userId
-                }))
-              }
-              break
+  try {
+    const userId = validateWSCookie(req)
+    clients.set(userId, ws)
+    ws.on("message", async (msg) => {
+      try {
+        const data = JSON.parse(msg.toString())
+        switch (data.type) {
+          case "offer": {
+            const user = await getUserByFriend(userId, data.friend_id)
+            if (!user) {
+              ws.send(JSON.stringify(responseWs("friendship not found")))
+              return
             }
-            case "answer": {
-              const offererWS = clients.get(data.friend_id)
-              if (offererWS && offererWS.readyState === WebSocket.OPEN) {
-                offererWS.send(JSON.stringify({
-                  type: "answer",
-                  sdp: data.sdp,
-                  from: userId
-                }))
-              }
-              break
+            const targetWS = clients.get(data.friend_id)
+            if (targetWS && targetWS.readyState === WebSocket.OPEN) {
+              targetWS.send(JSON.stringify({
+                type: "offer",
+                sdp: data.sdp,
+                from: userId,
+                user: user,
+              }))
             }
-            case "ice": {
-              const peerWS = clients.get(data.friend_id)
-              if (peerWS && peerWS.readyState === WebSocket.OPEN) {
-                peerWS.send(JSON.stringify({
-                  type: "ice",
-                  candidate: data.candidate,
-                  from: userId
-                }))
-              }
-              break
-            }
-            case "cancel": {
-              const targetWS = clients.get(data.friend_id)
-              if (targetWS && targetWS.readyState === WebSocket.OPEN) {
-                targetWS.send(JSON.stringify(responseWs("cancel")))
-              }
-              break
-            }
-             
+            break
           }
-        } catch (error) {
-          console.log(error)
+          case "answer": {
+            const offererWS = clients.get(data.friend_id)
+            if (offererWS && offererWS.readyState === WebSocket.OPEN) {
+              offererWS.send(JSON.stringify({
+                type: "answer",
+                sdp: data.sdp,
+                from: userId
+              }))
+            }
+            break
+          }
+          case "ice": {
+            const peerWS = clients.get(data.friend_id)
+            if (peerWS && peerWS.readyState === WebSocket.OPEN) {
+              peerWS.send(JSON.stringify({
+                type: "ice",
+                candidate: data.candidate,
+                from: userId
+              }))
+            }
+            break
+          }
+          case "cancel": {
+            const targetWS = clients.get(data.friend_id)
+            if (targetWS && targetWS.readyState === WebSocket.OPEN) {
+              targetWS.send(JSON.stringify({
+                type: "cancel",
+              }))
+            }
+            break
+          }
+            
         }
-      })
-      ws.on("close", () => {
-        clients.delete(userId)
-        console.log("Closed:", userId)
-      })
-    } catch (error) {
-      if (error instanceof CookieError) {
-        const msg: messages = "invalid cookie"
-        console.log(msg)
-        ws.send(JSON.stringify(responseWs(msg)))
-        ws.close()
-        return
+      } catch (error) {
+        console.log(error)
       }
-      console.log(error)
-      ws.send(JSON.stringify(responseWs("server error")))
+    })
+    ws.on("close", () => {
+      clients.delete(userId)
+    })
+  } catch (error) {
+    if (error instanceof CookieError) {
+      const msg: messages = "invalid cookie"
+      console.log(msg)
+      ws.send(JSON.stringify(responseWs(msg)))
       ws.close()
+      return
     }
+    console.log(error)
+    ws.send(JSON.stringify(responseWs("server error")))
+    ws.close()
+  }
   })
 }
