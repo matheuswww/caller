@@ -9,4 +9,5 @@ export interface friendsResponse {
   user_id: string
   name: string
   user: string
+  on: boolean
 }

@@ -1,6 +1,7 @@
 import type { RowDataPacket } from "mysql2"
 import { db } from "../../configuration/mysql/conn.js"
 import type { friendsResponse } from "../../response/friends/getFriends/getFriends.js"
+import { getClientState } from "../../websocket/notification/userState.js"
 
 interface userRow extends RowDataPacket {
   id: string
@@ -24,9 +25,11 @@ export default async function getUserByFriend(user_id: string, friend_id: string
     return null
   }
 
+  const on = getClientState(friend_id)
   return {
     user_id: row.id,
     name: row.name,
-    user: row.user
+    user: row.user,
+    on: on
   }
 }

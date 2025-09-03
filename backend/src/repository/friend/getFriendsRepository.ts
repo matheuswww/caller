@@ -2,6 +2,7 @@ import type { RowDataPacket } from "mysql2"
 import { db } from "../../configuration/mysql/conn.js"
 import type getFriendsResponse from "../../response/friends/getFriends/getFriends.js"
 import type { friendsResponse } from "../../response/friends/getFriends/getFriends.js"
+import { getClientState, setUserFriends } from "../../websocket/notification/userState.js"
 
 interface friendsRows extends RowDataPacket {
   user_id: string
@@ -32,11 +33,15 @@ export default async function getFriendsRepository(user_id: string, last_user_cu
     if (row.user_id != user_id) {
       friend_id = row.user_id
     }
+
+    const on = getClientState(friend_id)
+
     if (row.accepted) {
       friends.push({
         user_id: friend_id,
         name: row.name,
-        user: row.user
+        user: row.user,
+        on: on
       })
       continue  
     }
@@ -44,9 +49,20 @@ export default async function getFriendsRepository(user_id: string, last_user_cu
     requests.push({
       user_id: friend_id,
       name: row.name,
-      user: row.user
+      user: row.user,
+      on: on
     })
   }
+
+  const ids = friends.map((friend) => {
+    return friend.user_id
+  })
+  const ids_ = requests.map((friend) => {
+    return friend.user_id
+  })
+  const join = [...ids, ...ids_]
+
+  setUserFriends(user_id, join)
 
   let next: boolean = false
   query = "SELECT 1 FROM "+ from +" WHERE "+ where + " AND u.user > ? " + "ORDER BY u.user ASC LIMIT 1"

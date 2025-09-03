@@ -5,14 +5,17 @@ import { CookieError } from "../../cookie/cookie-customError.js"
 import type { messages } from "../../response/response.js"
 import responseWs from "./responseWs.js"
 import getUserByFriend from "../../repository/friend/getUserByFriendRepository.js"
+import { updateUserFriendsState } from "./userState.js"
 
 export const clients = new Map<string, WebSocket>()
+export const userFriends = new Map<string, string[]>()
 
 export default function WSConnection(wss: Server<typeof WebSocket, typeof IncomingMessage>) {
   wss.on("connection", (ws, req) => {
   try {
     const userId = validateWSCookie(req)
     clients.set(userId, ws)
+    updateUserFriendsState(userId)
     ws.on("message", async (msg) => {
       try {
         const data = JSON.parse(msg.toString())
@@ -53,7 +56,8 @@ export default function WSConnection(wss: Server<typeof WebSocket, typeof Incomi
                 candidate: data.candidate,
                 from: userId
               }))
-            }
+            }      clients.delete(userId)
+
             break
           }
           case "cancel": {
@@ -73,6 +77,8 @@ export default function WSConnection(wss: Server<typeof WebSocket, typeof Incomi
     })
     ws.on("close", () => {
       clients.delete(userId)
+      updateUserFriendsState(userId)
+      userFriends.delete(userId)
     })
   } catch (error) {
     if (error instanceof CookieError) {
