@@ -82,7 +82,7 @@ export default function Call({ setActions, setFriends, setError, actions, cookie
             pendingCandidates.current.push(data.candidate)
           }
           break
-        case "cancel":
+        case "desconect":
           endCall()
           break
       }
@@ -119,7 +119,7 @@ export default function Call({ setActions, setFriends, setError, actions, cookie
         actionsRef.current.friend_id = actions.friend_id
         handleOffer(offerData)
         break;
-      case "cancel":
+      case "desconect":
         actionsRef.current.actions = actions.actions
         actionsRef.current.friend_id = actions.friend_id
         handleEndCall()
@@ -172,7 +172,10 @@ export default function Call({ setActions, setFriends, setError, actions, cookie
     pc.oniceconnectionstatechange = () => {
       switch (pcRef.current?.iceConnectionState) {
         case "disconnected":
-          endCall()
+          if (callStarted) {
+            endCall()
+          }
+          break
         case "failed":
           endCall()
           break
@@ -222,7 +225,7 @@ export default function Call({ setActions, setFriends, setError, actions, cookie
 
   function handleEndCall() {
     wsRef.current?.send(JSON.stringify({
-      type: "cancel",
+      type: "desconect",
       friend_id: actionsRef.current.friend_id
     }))
     endCall()
@@ -234,6 +237,9 @@ export default function Call({ setActions, setFriends, setError, actions, cookie
     setAcceptedCall(false)
     setCallStarted(false)
     setReceivingCall(false)
+    wsRef.current?.send(JSON.stringify({
+      type: "unbusy"
+    }))
     pcRef.current?.close()
     pcRef.current = null
     localStreamRef.current?.getTracks().forEach(t => t.stop())
@@ -275,7 +281,7 @@ export default function Call({ setActions, setFriends, setError, actions, cookie
               onClick={() => {
                 if (receivingCall && friend) {
                   setActions({
-                    actions: "cancel",
+                    actions: "desconect",
                     friend_id: friend.user_id,
                   })
                   return

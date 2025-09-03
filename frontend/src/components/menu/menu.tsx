@@ -89,6 +89,10 @@ export default function Menu({ setActions, setError, addAlert, setFriends, frien
   }
 
   function handleCall(friend: friendsResponse) {
+    if (friend.state === "busy") {
+      addAlert("Este usuário já esta em uma ligação", "yellow", 1800)
+      return
+    }
     setActions({
       actions: "request",
       friend_id: friend.user_id
@@ -108,7 +112,7 @@ export default function Menu({ setActions, setError, addAlert, setFriends, frien
         {friends ? friends.friends.map((friend) => {
           return (
             <React.Fragment key={friend.user_id}>
-            <div className="flex items-center relative" key={friend.user_id}>
+            <div className="flex items-center relative mt-7" key={friend.user_id}>
               <button onClick={() => handleCall(friend)} aria-label={`call ${friend.name}`} className="rounded-full w-11 h-11 bg-white mt-2 flex-shrink-0 hover:opacity-80">     
                 <Image
                   src={friend.img ? friend.img : "/img/account.png"}
@@ -123,7 +127,10 @@ export default function Menu({ setActions, setError, addAlert, setFriends, frien
                 <p className="text-white/60 text-[.9rem] font-bold">@{friend.user}</p>
               </div>
               <button onClick={() => handleDeleteFriend(friend.user_id)} aria-label="x to delete from friends " className="bg-red-400 rounded-full w-6 h-6 font-bold text-amber-50 mt-2 cursor-pointer hover:bg-red-500 absolute -top-5 left-7">x</button>
-              { friend.on ? 
+              { friend.state === "busy" ? 
+                <span className="w-3 h-3 bg-yellow-300 rounded-full absolute top-1 right-9"></span>
+              :
+                friend.state === "on" ?
                 <span className="w-3 h-3 bg-green-300 rounded-full absolute top-1 right-9"></span>
                :
                 <span className="w-3 h-3 bg-red-300 rounded-full absolute top-1 right-9"></span>
