@@ -1,6 +1,7 @@
 import type { RowDataPacket } from "mysql2"
 import { db } from "../../configuration/mysql/conn.js"
 import type { getUserResponse } from "../../response/user/getUserResponse.js"
+import getUserImgUrl from "../../controller/user/util/getUserImgUrl.js"
 
 export interface user extends RowDataPacket {
   name: string
@@ -14,9 +15,11 @@ export default async function getUserRepository(user_id: string): Promise<getUse
   if (rows.length == 0 || !row) {
     throw new Error()
   }
+  const img = getUserImgUrl(user_id)
   return {
     user_id: user_id,
     name: row.name,
-    user: row.user
+    user: row.user,
+    img: img
   }
 }

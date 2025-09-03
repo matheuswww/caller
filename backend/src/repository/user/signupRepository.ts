@@ -7,7 +7,7 @@ import bcrypt from "bcrypt";
 
 export const bcryptRounds = 10
 
-export default async function signupRepository(user: signupRequest): Promise<string> {
+export default async function signupRepository(user: signupRequest, saveImg: (id: string, img: Express.Multer.File) => void): Promise<string> {
   let query = "SELECT 1 FROM user WHERE email = ? LIMIT 1 "
   const [emailRows] = await db.query<RowDataPacket[]>(query, [user.email])
   
@@ -27,6 +27,9 @@ export default async function signupRepository(user: signupRequest): Promise<str
   query = "INSERT INTO user (id, email, password, name, user) VALUES (?, ?, ?, ?, ?)"
 
   const id = uuidv4()
+  
+  saveImg(id, user.img)
+
   await db.execute(query, [id, user.email, hashed, user.name, user.user])
 
   return id

@@ -6,7 +6,10 @@ import { createMysqlConn } from "./configuration/mysql/conn.js";
 import initUserRoutes from "./router/user/initUserRouter.js";
 import initFriendRoutes from "./router/friend/initFriendRouter.js";
 import WSConnection from "./websocket/WSconnection.js";
+import path from "path";
+import runMigrations from "./configuration/migration/run.js";
 
+const IMG_FOLDER = path.join(process.cwd(), "img");
 const app = express();
 const server = createServer(app);
 const wss = new WebSocketServer({ server });
@@ -22,6 +25,7 @@ createMysqlConn();
 WSConnection(wss);
 initUserRoutes(app);
 initFriendRoutes(app);
+app.use("/images", express.static(IMG_FOLDER));
 
 server.listen(5000, () => {
   console.log("running in 5000");  

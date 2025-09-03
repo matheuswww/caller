@@ -9,5 +9,6 @@ export interface friendsResponse {
   user_id: string
   name: string
   user: string
+  img: string
   state: "on" | "off" | "busy"
 }

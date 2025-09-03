@@ -1,6 +1,7 @@
 import type { RowDataPacket } from "mysql2";
 import { db } from "../../configuration/mysql/conn.js";
 import type { searchUserResponse } from "../../response/user/searchUser.js";
+import getUserImgUrl from "../../controller/user/util/getUserImgUrl.js";
 
 interface user extends RowDataPacket {
   id: string
@@ -16,10 +17,12 @@ export default async function SearchUserRepository(user: string): Promise<search
   const [rows] = await db.query<user[]>(query, [user, user])
   const users: searchUserResponse[] = []
   for (let row of rows) {
+    const img = getUserImgUrl(row.id)
     users.push({
       user_id: row.id,
       name: row.name,
-      user: row.user
+      user: row.user,
+      img: img
     })
   }
   

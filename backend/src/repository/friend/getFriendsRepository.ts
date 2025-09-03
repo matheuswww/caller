@@ -3,6 +3,7 @@ import { db } from "../../configuration/mysql/conn.js"
 import type getFriendsResponse from "../../response/friends/getFriends/getFriends.js"
 import type { friendsResponse } from "../../response/friends/getFriends/getFriends.js"
 import { getClientState, setUserFriends } from "../../websocket/userState.js"
+import getUserImgUrl from "../../controller/user/util/getUserImgUrl.js"
 
 interface friendsRows extends RowDataPacket {
   user_id: string
@@ -36,11 +37,14 @@ export default async function getFriendsRepository(user_id: string, last_user_cu
 
     const state = getClientState(friend_id)
 
+    const img = getUserImgUrl(friend_id)
+
     if (row.accepted) {
       friends.push({
         user_id: friend_id,
         name: row.name,
         user: row.user,
+        img: img,
         state: state
       })
       continue  
@@ -50,6 +54,7 @@ export default async function getFriendsRepository(user_id: string, last_user_cu
       user_id: friend_id,
       name: row.name,
       user: row.user,
+      img: img,
       state: state
     })
   }
