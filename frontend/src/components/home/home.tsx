@@ -10,6 +10,7 @@ import { getFriendsResponse } from "@/lib/api/friend/getFriends"
 export interface actions { 
   actions: "request" | "accept" | "desconect" | null 
   friend_id: string | null
+  off?: "off"
 }
 
 interface props {

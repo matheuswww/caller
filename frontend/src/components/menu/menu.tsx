@@ -75,7 +75,7 @@ export default function Menu({ setActions, setError, addAlert, setFriends, frien
     try {
       await friendshipAction({
         action: "delete",
-        friend_id: id
+        friend_id: id,
       })
     } catch (error) {
       if (error instanceof InvalidCookie) {
@@ -95,7 +95,8 @@ export default function Menu({ setActions, setError, addAlert, setFriends, frien
     }
     setActions({
       actions: "request",
-      friend_id: friend.user_id
+      friend_id: friend.user_id,
+      off: friend.state === "off" ? friend.state : undefined
     })
   }
 

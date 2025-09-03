@@ -130,6 +130,21 @@ export default function Call({ setActions, setFriends, setError, actions, cookie
   }, [actions])
 
   useEffect(() => {
+    if (friends) {
+      friends.friends.forEach((friend) => {
+        if (friend.user_id === actions.friend_id) {
+          if (actions.off === "off") {
+            setActions({
+              actions: actions.actions,
+              friend_id: actions.friend_id
+            })
+          }
+        }
+      })
+    }
+  }, [friends])
+
+  useEffect(() => {
     if (acceptedCall && receivingCall) {
       setActions({
         actions: "accept",
