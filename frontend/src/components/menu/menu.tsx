@@ -16,9 +16,10 @@ interface props {
   setActions: Dispatch<SetStateAction<actions>>
   setFriends: Dispatch<SetStateAction<getFriendsResponse | null>>
   friends: getFriendsResponse | null
+  actions: actions
 }
 
-export default function Menu({ setActions, setError, addAlert, setFriends, friends }:props) {
+export default function Menu({ setActions, setError, addAlert, setFriends, actions, friends }:props) {
   const router = useRouter()
   const [expanded, setExpanded] = useState<boolean>(false)
   const [notiPopup, setNotiPopup] = useState<boolean>(false)
@@ -94,9 +95,10 @@ export default function Menu({ setActions, setError, addAlert, setFriends, frien
       return
     }
     setActions({
+      new_call: actions.friend_id ? true : undefined,
       actions: "request",
       friend_id: friend.user_id,
-      off: friend.state === "off" ? friend.state : undefined
+      off: friend.state === "off" ? friend.state : undefined,
     })
   }
 

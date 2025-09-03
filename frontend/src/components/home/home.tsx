@@ -11,6 +11,7 @@ export interface actions {
   actions: "request" | "accept" | "desconect" | null 
   friend_id: string | null
   off?: "off"
+  new_call?: true
 }
 
 interface props {
@@ -32,8 +33,9 @@ export function Home({ cookie }:props) {
       setError={setError}
       addAlert={addAlert}
       setActions={setActions}
-      friends={friends}
       setFriends={setFriends}
+      friends={friends}
+      actions={actions}
     />
     <main className={`transition-opacity duration-300 ease-in-out`}>
       { alertComponent }

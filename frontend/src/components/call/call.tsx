@@ -99,6 +99,12 @@ export default function Call({ setActions, setFriends, setError, actions, cookie
     if (!actions.actions || !actions.friend_id) return
     switch (actions.actions) {
       case "request":
+        if (actions.new_call) {
+          const newActions = actions
+          newActions.new_call = undefined
+          handleEndCall()
+          setActions(newActions)
+        }
         if (friends) {
           for (let friend of friends?.friends) {
             if (friend.user_id === actions.friend_id) {
@@ -254,6 +260,12 @@ export default function Call({ setActions, setFriends, setError, actions, cookie
     setAcceptedCall(false)
     setCallStarted(false)
     setReceivingCall(false)
+    setActions({
+      actions: null,
+      friend_id: null,
+      new_call: undefined,
+      off: undefined
+    })
     wsRef.current?.send(JSON.stringify({
       type: "unbusy"
     }))
@@ -266,105 +278,105 @@ export default function Call({ setActions, setFriends, setError, actions, cookie
   return (
     <>
     <div className="grid justify-center">
-      { callStarted && <Timer /> }
+    { callStarted && <Timer /> }
 
-<div className="w-full max-w-lg mx-auto">
-  <div className="flex flex-row flex-nowrap items-start justify-center">
-    <div className="flex-shrink-0 flex flex-col items-center w-24">
-      {user ? (
-        <div className="w-24 h-24 rounded-full overflow-hidden mb-1">
-          <Image
-            src={user.img ? user.img : "/img/account.png"}
-            alt="your image"
-            width={100}
-            height={100}
-            className="object-cover w-full h-full"
+    <div className="w-full max-w-lg mx-auto">
+      <div className="flex flex-row flex-nowrap items-start justify-center">
+        <div className="flex-shrink-0 flex flex-col items-center w-24">
+          {user ? (
+            <div className="w-24 h-24 rounded-full overflow-hidden mb-1">
+              <Image
+                src={user.img ? user.img : "/img/account.png"}
+                alt="your image"
+                width={100}
+                height={100}
+                className="object-cover w-full h-full"
+              />
+            </div>
+            ) : (
+            <div
+              className="w-24 h-24 rounded-full bg-purple-950 animate-pulse mb-1"
+              aria-label="loading user image"
           />
-        </div>
-        ) : (
-        <div
-          className="w-24 h-24 rounded-full bg-purple-950 animate-pulse mb-1"
-          aria-label="loading user image"
-        />
-        )}
-        {user ? (
-          <>
-            <p className="text-amber-50 text-center mt-2 font-bold">{user.name}</p>
-            <p className="text-white/60 text-center text-[.9rem] font-bold">
-              @{user.user}
-            </p>
-          </>
-        ) : (
-          <div className="flex flex-col items-center mt-2 space-y-2">
-            <span
-              className="block w-32 h-5 bg-purple-950 rounded animate-pulse"
-              aria-label="loading user name"
-            />
-            <span
-              className="block w-24 h-4 bg-purple-950 rounded animate-pulse"
-              aria-label="loading user"
-            />
-          </div>
           )}
-          </div>
-          <div className="w-6 shrink-0" aria-hidden="true" />
-          {friend && (
-            <div className="flex-shrink-0 flex flex-col items-center w-24">
-              <div className="w-24 h-24 rounded-full overflow-hidden mb-1">
-                <Image
-                  src={friend.img ? friend.img : "/img/account.png"}
-                  alt="friend image"
-                  width={100}
-                  height={100}
-                  className="object-cover w-full h-full"
-                />
-              </div>
-              <p className="text-amber-50 text-center mt-2 font-bold">{friend.name}</p>
+          {user ? (
+            <>
+              <p className="text-amber-50 text-center mt-2 font-bold">{user.name}</p>
               <p className="text-white/60 text-center text-[.9rem] font-bold">
-                @{friend.user}
+                @{user.user}
               </p>
+            </>
+          ) : (
+            <div className="flex flex-col items-center mt-2 space-y-2">
+              <span
+                className="block w-32 h-5 bg-purple-950 rounded animate-pulse"
+                aria-label="loading user name"
+              />
+              <span
+                className="block w-24 h-4 bg-purple-950 rounded animate-pulse"
+                aria-label="loading user"
+              />
+            </div>
+            )}
+            </div>
+            <div className="w-6 shrink-0" aria-hidden="true" />
+            {friend && (
+              <div className="flex-shrink-0 flex flex-col items-center w-24">
+                <div className="w-24 h-24 rounded-full overflow-hidden mb-1">
+                  <Image
+                    src={friend.img ? friend.img : "/img/account.png"}
+                    alt="friend image"
+                    width={100}
+                    height={100}
+                    className="object-cover w-full h-full"
+                  />
+                </div>
+                <p className="text-amber-50 text-center mt-2 font-bold">{friend.name}</p>
+                <p className="text-white/60 text-center text-[.9rem] font-bold">
+                  @{friend.user}
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
+
+        <div className="flex justify-center">
+          {(callStarted || receivingCall || sendingCall) && (
+            <div className={`${(receivingCall || sendingCall) && "animate-pulse"}`}>
+              <button
+                aria-label="accept call"
+                onClick={() => {
+                  if (receivingCall && friend) {
+                    setActions({
+                      actions: "desconect",
+                      friend_id: friend.user_id,
+                    })
+                    return
+                  }
+                  handleEndCall()
+                }}
+                className="bg-red-500 hover:bg-red-600 rounded-full w-20 h-20 m-auto mt-5 flex justify-center items-center fade-in-up cursor-pointer"
+              >
+              <Image src="/img/phone.png" alt="phone" width={45} height={45} />
+            </button>
+            </div>
+          )}
+
+          {receivingCall && (
+            <div className="animate-pulse">
+              <button
+                aria-label="finish call"
+                onClick={() => setAcceptedCall(true)}
+                className="bg-green-500 hover:bg-green-600 rounded-full w-20 h-20 m-auto mt-5 flex justify-center items-center fade-in-up cursor-pointer ml-4"
+              >
+                <Image src="/img/phone.png" alt="phone" width={45} height={45} />
+              </button>
             </div>
           )}
         </div>
       </div>
-
-      <div className="flex justify-center">
-        {(callStarted || receivingCall || sendingCall) && (
-          <div className={`${(receivingCall || sendingCall) && "animate-pulse"}`}>
-            <button
-              aria-label="accept call"
-              onClick={() => {
-                if (receivingCall && friend) {
-                  setActions({
-                    actions: "desconect",
-                    friend_id: friend.user_id,
-                  })
-                  return
-                }
-                handleEndCall()
-              }}
-              className="bg-red-500 hover:bg-red-600 rounded-full w-20 h-20 m-auto mt-5 flex justify-center items-center fade-in-up cursor-pointer"
-            >
-            <Image src="/img/phone.png" alt="phone" width={45} height={45} />
-          </button>
-          </div>
-        )}
-
-        {receivingCall && (
-          <div className="animate-pulse">
-            <button
-              aria-label="finish call"
-              onClick={() => setAcceptedCall(true)}
-              className="bg-green-500 hover:bg-green-600 rounded-full w-20 h-20 m-auto mt-5 flex justify-center items-center fade-in-up cursor-pointer ml-4"
-            >
-              <Image src="/img/phone.png" alt="phone" width={45} height={45} />
-            </button>
-          </div>
-        )}
-      </div>
-    </div>
-    <audio ref={remoteAudioRef} autoPlay />
-    { (receivingCall || sendingCall) && <audio src="/audio/phone_ring.wav" autoPlay loop/> }
+      <audio ref={remoteAudioRef} autoPlay />
+      { (receivingCall || sendingCall) && <audio src="/audio/phone_ring.wav" autoPlay loop/> }
     </>
 
   )
