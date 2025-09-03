@@ -282,29 +282,27 @@ export default function Call({ setActions, setFriends, setError, actions, cookie
 
     <div className="w-full max-w-lg mx-auto">
       <div className="flex flex-row flex-nowrap items-start justify-center">
-        <div className="flex-shrink-0 flex flex-col items-center w-24">
+        <div className="flex-shrink-0 flex flex-col items-center">
           {user ? (
-            <div className="w-24 h-24 rounded-full overflow-hidden mb-1">
+            <div className="w-24 h-24 rounded-full overflow-hidden mb-1 sm:w-35 sm:h-35">
               <Image
                 src={user.img ? user.img : "/img/account.png"}
                 alt="your image"
-                width={100}
-                height={100}
+                width={150}
+                height={150}
                 className="object-cover w-full h-full"
               />
             </div>
             ) : (
             <div
-              className="w-24 h-24 rounded-full bg-purple-950 animate-pulse mb-1"
+              className="w-24 h-24 rounded-full bg-purple-950 animate-pulse mb-1 sm:w-35 sm:h-35"
               aria-label="loading user image"
           />
           )}
           {user ? (
             <>
               <p className="text-amber-50 text-center mt-2 font-bold">{user.name}</p>
-              <p className="text-white/60 text-center text-[.9rem] font-bold">
-                @{user.user}
-              </p>
+              <p className="text-white/60 text-center text-[.9rem] font-bold">@{user.user}</p>
             </>
           ) : (
             <div className="flex flex-col items-center mt-2 space-y-2">
@@ -321,20 +319,18 @@ export default function Call({ setActions, setFriends, setError, actions, cookie
             </div>
             <div className="w-6 shrink-0" aria-hidden="true" />
             {friend && (
-              <div className="flex-shrink-0 flex flex-col items-center w-24">
-                <div className="w-24 h-24 rounded-full overflow-hidden mb-1">
+              <div className="flex-shrink-0 flex flex-col items-center">
+                <div className="w-24 h-24 rounded-full overflow-hidden mb-1 sm:w-35 sm:h-35">
                   <Image
                     src={friend.img ? friend.img : "/img/account.png"}
                     alt="friend image"
-                    width={100}
-                    height={100}
+                    width={150}
+                    height={150}
                     className="object-cover w-full h-full"
                   />
                 </div>
                 <p className="text-amber-50 text-center mt-2 font-bold">{friend.name}</p>
-                <p className="text-white/60 text-center text-[.9rem] font-bold">
-                  @{friend.user}
-                </p>
+                <p className="text-white/60 text-center text-[.9rem] font-bold">@{friend.user}</p>
               </div>
             )}
           </div>
