@@ -20,6 +20,7 @@ export async function getFriends(): Promise<getFriendsResponse> {
   const res = await fetch(url, {
     method: "GET",
     headers: { "Content-Type": "application/json" },
+    
     credentials: "include",
   }).then(async (res) => {
     if (res.status === 401) {

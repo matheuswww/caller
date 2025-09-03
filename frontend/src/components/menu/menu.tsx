@@ -1,23 +1,26 @@
-import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
+import React, { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import Image from "next/image"
 import NotiButton from "./noti/notiButton";
 import NotiPopup from "./noti/notiPopup";
 import { deleteCookie } from "@/action/deleteCookie";
 import { useRouter } from "next/navigation";
-import { getFriends, getFriendsResponse } from "@/lib/api/friend/getFriends";
+import { friendsResponse, getFriends, getFriendsResponse } from "@/lib/api/friend/getFriends";
 import { friendshipAction } from "@/lib/api/friend/friendShipAction";
 import { InvalidCookie } from "@/lib/api/error";
 import { AlertType } from "../alert/alert";
+import { actions } from "../home/home";
 
 interface props {
   setError: Dispatch<SetStateAction<boolean>>
   addAlert: (message: string, type?: AlertType | undefined, duration?: number) => void
+  setActions: Dispatch<SetStateAction<actions>>
+  setFriends: Dispatch<SetStateAction<getFriendsResponse | null>>
+  friends: getFriendsResponse | null
 }
 
-export default function Menu({ setError, addAlert }:props) {
+export default function Menu({ setActions, setError, addAlert, setFriends, friends }:props) {
   const router = useRouter()
   const [expanded, setExpanded] = useState<boolean>(false)
-  const [friends, setFriends] = useState<getFriendsResponse | null>(null)
   const [notiPopup, setNotiPopup] = useState<boolean>(false)
   const menuRef = useRef<HTMLDivElement>(null)
   const popupNotiRef = useRef<HTMLDivElement>(null)
@@ -85,6 +88,13 @@ export default function Menu({ setError, addAlert }:props) {
     }
   }
 
+  function handleCall(friend: friendsResponse) {
+    setActions({
+      actions: "request",
+      friend_id: friend.user_id
+    })
+  }
+
   return (
     <div className={`overflow-hidden fixed h-screen left-0 top-0 z-50`}>
       <NotiPopup addAlert={addAlert} getFriendsResponse={friends} open={notiPopup} popupRef={popupNotiRef} setOpen={setNotiPopup} />
@@ -97,9 +107,9 @@ export default function Menu({ setError, addAlert }:props) {
 
         {friends ? friends.friends.map((friend) => {
           return (
-            <>
+            <React.Fragment key={friend.user_id}>
             <div className="flex items-center relative" key={friend.user_id}>
-              <div className="rounded-full w-11 h-11 bg-white mt-2 flex-shrink-0">     
+              <button onClick={() => handleCall(friend)} aria-label={`call ${friend.name}`} className="rounded-full w-11 h-11 bg-white mt-2 flex-shrink-0 hover:opacity-80">     
                 <Image
                   src={friend.img ? friend.img : "/img/account.png"}
                   alt="user image"
@@ -107,14 +117,14 @@ export default function Menu({ setError, addAlert }:props) {
                   height={44}
                   className="cursor-pointer mb-1"
                 />
-              </div>
+              </button>
               <div className={`ml-2 transition-all duration-300 ${expanded ? "visible opacity-100" : "invisible opacity-0"}`}aria-hidden={!expanded}>
                 <p className="text-amber-50 font-bold mt-2">{friend.name}</p>
                 <p className="text-white/60 text-[.9rem] font-bold">@{friend.user}</p>
               </div>
               <button onClick={() => handleDeleteFriend(friend.user_id)} aria-label="x to delete from friends " className="bg-red-400 rounded-full w-6 h-6 font-bold text-amber-50 mt-2 cursor-pointer hover:bg-red-500 absolute -top-5 left-7">x</button>
             </div>
-            </>
+            </React.Fragment>
           )
         }) : 
           [...Array(3)].map((_,i) => {        
