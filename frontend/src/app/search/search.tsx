@@ -34,7 +34,7 @@ export default function Search({ addAlert }:searchProps) {
 
   return (
      <div className="max-w-xs flex justify-center items-center h-12 relative top-10">  
-      <label htmlFor="search" className="absolute right-7">
+      <label htmlFor="search" className="absolute right-4">
         <Image src="/img/search.png" alt="magnifying glass" width={20} height={20} className="cursor-pointer" />
       </label>
       <input id="search" type="text" placeholder="Search user" className="w-52 bg-purple-950 rounded-md text-amber-50 p-1 pl-2 pr-10 font-bold" onInput={throttledHandleInput}/>
@@ -44,13 +44,16 @@ export default function Search({ addAlert }:searchProps) {
             {users.map((user) => {
               return (
                 <div className="flex items-center mt-2" key={user.user_id}>
-                  <div className="bg-amber-50 w-8 h-8 rounded-full m-2 ml-3 relative">
-                    <Image
-                      src="/img/account.png"
-                      alt="user image"
-                      width={32}
-                      height={32}
-                    />
+                  <div className="w-8 h-8 m-2 ml-3 relative">
+                    <div className="w-8 h-8 rounded-full overflow-hidden">
+                        <Image
+                        src={user.img ? user.img : "/img/account.png"}
+                        alt="user image"
+                        width={100}
+                        height={100}
+                        className="object-cover w-full h-full"
+                      />
+                    </div>
                     <AddButton user={user} addAlert={addAlert} />
                   </div>
                   <div>

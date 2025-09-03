@@ -20,7 +20,7 @@ export default function PasswordInput({ register, name, id = "password", placeho
         id={id}
         placeholder={placeholder}
         {...register(name)}
-        className="w-full rounded-md border border-gray-300 p-2 pr-10 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500"
+        className="w-full rounded-md p-2 pr-10 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500"
       />
 
       <button

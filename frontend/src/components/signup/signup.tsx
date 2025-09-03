@@ -25,6 +25,48 @@ export const signupSchema = z.object({
   password: z.string()
     .min(6, { message: "Password must be at least 6 characters long" })
     .max(60, { message: "Password must be at most 60 characters long" }),
+  confirmPassword: z.string()
+    .min(6, { message: "Confirm password must be at least 6 characters long" })
+    .max(60, { message: "Confirm password must be at most 60 characters long" }),
+  img: z
+  .custom<FileList>(
+   (fileList) => {
+    if (!fileList) return false;
+    return (
+     fileList instanceof FileList &&
+     fileList.length === 1 &&
+     fileList[0] instanceof File
+    );
+   },
+   {
+    message: 'Selecione uma imagem válida',
+   },
+  )
+  .refine(
+   (fileList) => {
+    if (!(fileList instanceof FileList) || fileList.length === 0) return false;
+    const file = fileList[0];
+    const maxSize = 4 * 1024 * 1024;
+    return file.size <= maxSize;
+   },
+   {
+    message: 'Imagem deve ter no máximo 4MB',
+   },
+  )
+  .refine(
+   (fileList) => {
+    if (!(fileList instanceof FileList) || fileList.length === 0) return false;
+    const file = fileList[0];
+    const ext = file.name.toLowerCase().slice(file.name.lastIndexOf('.'));
+    return ['.jpg', '.jpeg', '.png'].includes(ext);
+   },
+   {
+    message: 'A imagem deve ser JPG, JPEG ou PNG',
+   },
+  ),
+}).refine((data) => data.password === data.confirmPassword, {
+  path: ["confirmPassword"],
+  message: "Passwords must match",
 })
 
 type SignupData = z.infer<typeof signupSchema>;
@@ -39,10 +81,10 @@ export default function SignupForm() {
   const [error, setError] = useState<string | null>(null)
 
   const onSubmit = async (data: SignupData) => {
-    try {
-      setLoad(true)
-      await signup(data)
-      router.push("/")
+  try {
+    setLoad(true)
+    await signup(data)
+    router.push("/")
     } catch (error) {
       if (error instanceof ConfictEmailError) {
         setError("This email already is in use")
@@ -58,7 +100,7 @@ export default function SignupForm() {
       addAlert("Parece que houve um erro, tente novamente", "red", 2000)
       console.log(error)
     }
-  };
+  }
 
   return (
     <main>
@@ -73,24 +115,49 @@ export default function SignupForm() {
             [&_input]:focus:outline-none [&_input]:focus:ring-2 [&_input]:focus:ring-amber-50
             [&>label]:text-amber-50 [&>label]:mt-3
           "
+          encType="multipart/form-data"
         >
-          <h1 className="text-amber-50 text-5xl font-bold absolute -top-20 left-1/2 -translate-x-1/2">Signup</h1>
+          <h1 className="text-amber-50 text-5xl font-bold text-center mb-5">Signup</h1>
           
           <label htmlFor="name">Name</label>
-          <input placeholder="Seu nome" id="name" {...register("name")} />
+          <input placeholder="Your name" id="name" {...register("name")} />
           {errors.name && <p className="text-red-400 font-bold mt-2">{errors.name.message}</p>}
 
           <label htmlFor="user">User</label>
-          <input placeholder="Seu usuário" id="user" {...register("user")} />
+          <input placeholder="Your user" id="user" {...register("user")} />
           {errors.user && <p className="text-red-400 font-bold mt-2">{errors.user.message}</p>}
 
           <label htmlFor="email">Email</label>
-          <input placeholder="Seu email" id="email" {...register("email")} />
+          <input placeholder="Your email" id="email" {...register("email")} />
           {errors.email && <p className="text-red-400 font-bold mt-2">{errors.email.message}</p>}
 
           <label htmlFor="password">Password</label>
-          <PasswordInput register={register} name="password" placeholder="Sua senha" />
+          <PasswordInput register={register} name="password" placeholder="Your password" />
           {errors.password && <p className="text-red-400 font-bold mt-2">{errors.password.message}</p>}
+
+          <label htmlFor="confirmPassword">Confirm Password</label>
+          <PasswordInput register={register} name="confirmPassword" placeholder="Confirme Your password" />
+          {errors.confirmPassword && <p className="text-red-400 font-bold mt-2">{errors.confirmPassword.message}</p>}
+
+          <label htmlFor="img">Profile Image</label>
+          <input
+            type="file"
+            id="img"
+            {...register("img")}
+            className="
+              w-full text-sm text-amber-50 
+              file:mr-4 file:py-2 file:px-4
+              file:rounded-md file:border-0
+              file:text-sm file:font-semibold
+              file:bg-purple-600 file:text-amber-50
+              hover:file:bg-purple-700
+              cursor-pointer
+            "
+          />
+          {errors.img?.message && typeof errors.img.message === "string" && (
+            <p className="text-red-400 font-bold mt-2">{errors.img.message}</p>
+          )}
+
           {error && <p className="text-red-400 font-bold mt-7">{error}</p>}
           <Link href="/signin" className="text-amber-50 mt-3 underline">Já possui uma conta?</Link>
           <div className="relative mt-8">

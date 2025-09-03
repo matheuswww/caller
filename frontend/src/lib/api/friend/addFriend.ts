@@ -21,7 +21,8 @@ export default async function addFriend(friend: addFriendRequest) {
     if (text) {
       if (res.status === 400) {
         const err: error = await JSON.parse(text)
-        if (err.message === "friend request already sent") {
+        console.log(err)
+        if (err.message === "you are already friends") {
           throw new AlreadySent()
         }
       }

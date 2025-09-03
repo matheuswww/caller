@@ -4,6 +4,7 @@ export interface getUserResponse {
   user_id: string
   name: string
   user: string
+  img: string
 }
 
 export default async function getUser():Promise<getUserResponse> {

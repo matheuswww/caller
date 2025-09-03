@@ -68,13 +68,13 @@ export default function SigninForm() {
             [&>label]:text-amber-50 [&>label]:mt-3
           "
         >
-          <h1 className="text-amber-50 text-5xl font-bold absolute -top-20 left-1/2 -translate-x-1/2">Signin</h1>
+          <h1 className="text-amber-50 text-5xl font-bold text-center mb-5">Signin</h1>
           <label htmlFor="email">Email</label>
-          <input placeholder="Seu email" id="email" {...register("email")} />
+          <input placeholder="Your email" id="email" {...register("email")} />
           {errors.email && <p className="text-red-400 font-bold mt-2">{errors.email.message}</p>}
 
           <label htmlFor="password">Password</label>
-          <PasswordInput register={register} name="password" placeholder="Sua senha" />
+          <PasswordInput register={register} name="password" placeholder="Your password" />
           {errors.password && <p className="text-red-400 font-bold mt-2">{errors.password.message}</p>}
           {error && <p className="text-red-400 font-bold mt-7">{error}</p>}
           <Link href="/signup" className="text-amber-50 mt-3 underline">Não possui uma conta?</Link>

@@ -13,7 +13,7 @@ export interface friendsResponse {
   name: string
   user: string
   state: "on" | "off" | "busy"
-  img: null
+  img: string
 }
 
 export async function getFriends(): Promise<getFriendsResponse> {

@@ -19,6 +19,7 @@ interface friend {
   user_id: string
   name: string
   user: string
+  img: string
 }
 
 export default function Call({ setActions, setFriends, setError, actions, cookie, friends }: props) {
@@ -104,7 +105,8 @@ export default function Call({ setActions, setFriends, setError, actions, cookie
               setFriend({
                 user_id: friend.user_id,
                 name: friend.name,
-                user: friend.user
+                user: friend.user,
+                img: friend.img
               })
             }
           }
@@ -266,28 +268,66 @@ export default function Call({ setActions, setFriends, setError, actions, cookie
     <div className="grid justify-center">
       { callStarted && <Timer /> }
 
-      <div className="flex justify-center">
-        <div className="flex-1 flex flex-col items-center">
-          <div className={`bg-white w-25 h-25 rounded-full m-3 ${!user && ""}`}>
-            <Image src="/img/account.png" alt="your image" width={100} height={100} className="cursor-pointer mb-1" />
-          </div>
-          {user && 
+<div className="w-full max-w-lg mx-auto">
+  <div className="flex flex-row flex-nowrap items-start justify-center">
+    <div className="flex-shrink-0 flex flex-col items-center w-24">
+      {user ? (
+        <div className="w-24 h-24 rounded-full overflow-hidden mb-1">
+          <Image
+            src={user.img ? user.img : "/img/account.png"}
+            alt="your image"
+            width={100}
+            height={100}
+            className="object-cover w-full h-full"
+          />
+        </div>
+        ) : (
+        <div
+          className="w-24 h-24 rounded-full bg-purple-950 animate-pulse mb-1"
+          aria-label="loading user image"
+        />
+        )}
+        {user ? (
           <>
             <p className="text-amber-50 text-center mt-2 font-bold">{user.name}</p>
-            <p className="text-white/60 text-center text-[.9rem] font-bold">@{user.user}</p>
-          </>}
-        </div>
-
-        {friend &&
-        <div className="flex-1 flex flex-col items-center fade-in-up">
-          <div className={`bg-white w-25 h-25 rounded-full m-3 ${(receivingCall || sendingCall) && "animate-pulse"}`}>
-            <Image src="/img/account.png" alt="user image" width={100} height={110} className="cursor-pointer mb-1" />
+            <p className="text-white/60 text-center text-[.9rem] font-bold">
+              @{user.user}
+            </p>
+          </>
+        ) : (
+          <div className="flex flex-col items-center mt-2 space-y-2">
+            <span
+              className="block w-32 h-5 bg-purple-950 rounded animate-pulse"
+              aria-label="loading user name"
+            />
+            <span
+              className="block w-24 h-4 bg-purple-950 rounded animate-pulse"
+              aria-label="loading user"
+            />
           </div>
-          <p className="text-amber-50 text-center mt-2 font-bold">{friend.name}</p>
-          <p className="text-white/60 text-center text-[.9rem] font-bold">@{friend.user}</p>
+          )}
+          </div>
+          <div className="w-6 shrink-0" aria-hidden="true" />
+          {friend && (
+            <div className="flex-shrink-0 flex flex-col items-center w-24">
+              <div className="w-24 h-24 rounded-full overflow-hidden mb-1">
+                <Image
+                  src={friend.img ? friend.img : "/img/account.png"}
+                  alt="friend image"
+                  width={100}
+                  height={100}
+                  className="object-cover w-full h-full"
+                />
+              </div>
+              <p className="text-amber-50 text-center mt-2 font-bold">{friend.name}</p>
+              <p className="text-white/60 text-center text-[.9rem] font-bold">
+                @{friend.user}
+              </p>
+            </div>
+          )}
         </div>
-        }
       </div>
+
       <div className="flex justify-center">
         {(callStarted || receivingCall || sendingCall) && (
           <div className={`${(receivingCall || sendingCall) && "animate-pulse"}`}>
@@ -324,7 +364,7 @@ export default function Call({ setActions, setFriends, setError, actions, cookie
       </div>
     </div>
     <audio ref={remoteAudioRef} autoPlay />
-    { ( receivingCall || sendingCall ) && <audio src="/audio/phone_ring.wav" autoPlay loop/> }
+    { (receivingCall || sendingCall) && <audio src="/audio/phone_ring.wav" autoPlay loop/> }
     </>
 
   )

@@ -114,15 +114,19 @@ export default function Menu({ setActions, setError, addAlert, setFriends, frien
           return (
             <React.Fragment key={friend.user_id}>
             <div className="flex items-center relative mt-7" key={friend.user_id}>
-              <button onClick={() => handleCall(friend)} aria-label={`call ${friend.name}`} className="rounded-full w-11 h-11 bg-white mt-2 flex-shrink-0 hover:opacity-80">     
-                <Image
-                  src={friend.img ? friend.img : "/img/account.png"}
-                  alt="user image"
-                  width={44}
-                  height={44}
-                  className="cursor-pointer mb-1"
-                />
-              </button>
+            <button
+              onClick={() => handleCall(friend)}
+              aria-label={`call ${friend.name}`}
+              className="rounded-full w-11 h-11 mt-2 flex-shrink-0 hover:opacity-80 overflow-hidden cursor-pointer"
+            >
+            <Image
+              src={friend.img ? friend.img : "/img/account.png"}
+              alt="user image"
+              width={100}
+              height={100}
+              className="object-cover w-full h-full"
+            />
+            </button>
               <div className={`ml-2 transition-all duration-300 ${expanded ? "visible opacity-100" : "invisible opacity-0"}`}aria-hidden={!expanded}>
                 <p className="text-amber-50 font-bold mt-2">{friend.name}</p>
                 <p className="text-white/60 text-[.9rem] font-bold">@{friend.user}</p>
@@ -146,7 +150,7 @@ export default function Menu({ setActions, setError, addAlert, setFriends, frien
         }
       </nav>
       <button onClick={handleExit} className="bg-purple-950 absolute bottom-10 ml-2 w-30 p-2 rounded-md font-bold text-amber-50 cursor-pointer flex hover:bg-purple-900">
-        <Image src="/img/exit.png" className="mr-6" width={24} height={24} alt="sdf" />Exit
+        <Image src="/img/exit.png" className="mr-6" width={24} height={24} alt="" />Exit
       </button>
     </div>
   )

@@ -44,18 +44,18 @@ export default function NotiPopup({ open, setOpen, popupRef, getFriendsResponse,
             getFriendsResponse.requests.map((friend) => {
             return (
               <div key={friend.user_id} className="bg-purple-950 w-full min-h-25 rounded-md flex items-center mt-2 p-2 relative">
-                <div className="bg-amber-50 w-14 h-14 shrink-0 rounded-full ml-2">
+                <div className="bg-amber-50 w-14 h-14 shrink-0 rounded-full ml-2 overflow-hidden">
                   <Image
-                    src="/img/account.png"
+                    src={friend.img ? friend.img : "/img/account.png"}
                     alt="user image"
-                    width={60}
-                    height={60}
-                    className="cursor-pointer mb-1"
+                    width={100}
+                    height={100}
+                    className="cursor-pointer mb-1 object-cover w-full h-full"
                   />
                 </div>
-                <p className="text-[.9rem] text-amber-50 font-bold ml-3 pb-8">{friend.name}</p>
-                <button className="absolute right-24 bottom-2 bg-green-700 text-amber-50 font-bold w-20 rounded-md cursor-pointer" onClick={() => handleFriendAction(friend.user_id, true)}>aceitar</button>
-                <button className="absolute right-2 bottom-2 bg-red-700 text-amber-50 font-bold w-20 rounded-md cursor-pointer" onClick={() => handleFriendAction(friend.user_id, false)}>recusar</button>
+                <p className="text-[.9rem] text-amber-50 font-bold ml-3 pb-8">{friend.name} enviou uma solicitação de amizade</p>
+                <button className="absolute right-24 bottom-2 bg-green-700 text-amber-50 font-bold w-20 rounded-md cursor-pointer hover:bg-green-600" onClick={() => handleFriendAction(friend.user_id, true)}>aceitar</button>
+                <button className="absolute right-2 bottom-2 bg-red-700 text-amber-50 font-bold w-20 rounded-md cursor-pointer hover:bg-red-600" onClick={() => handleFriendAction(friend.user_id, false)}>recusar</button>
               </div>
             )}) 
             :
