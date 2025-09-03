@@ -289,8 +289,8 @@ export default function Call({ setActions, setFriends, setError, actions, cookie
         }
       </div>
       <div className="flex justify-center">
-        {(callStarted || receivingCall) && (
-          <div className={`${receivingCall && "animate-pulse"}`}>
+        {(callStarted || receivingCall || sendingCall) && (
+          <div className={`${(receivingCall || sendingCall) && "animate-pulse"}`}>
             <button
               aria-label="accept call"
               onClick={() => {
