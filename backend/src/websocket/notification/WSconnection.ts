@@ -9,6 +9,7 @@ import { updateUserFriendsState } from "./userState.js"
 
 export const clients = new Map<string, WebSocket>()
 export const userFriends = new Map<string, string[]>()
+export const busy = new Map<string, string>()
 
 export default function WSConnection(wss: Server<typeof WebSocket, typeof IncomingMessage>) {
   wss.on("connection", (ws, req) => {
@@ -23,7 +24,11 @@ export default function WSConnection(wss: Server<typeof WebSocket, typeof Incomi
           case "offer": {
             const user = await getUserByFriend(userId, data.friend_id)
             if (!user) {
-              ws.send(JSON.stringify(responseWs("friendship not found")))
+              console.log("friendship not found")
+              return
+            }
+            const busy_ = busy.get(data.friend_id)
+            if (busy_) {
               return
             }
             const targetWS = clients.get(data.friend_id)
@@ -35,6 +40,10 @@ export default function WSConnection(wss: Server<typeof WebSocket, typeof Incomi
                 user: user,
               }))
             }
+            busy.set(userId, data.friend_id)
+            busy.set(data.friend_id, userId)
+            updateUserFriendsState(userId)
+            updateUserFriendsState(data.friend_id)
             break
           }
           case "answer": {
@@ -56,15 +65,20 @@ export default function WSConnection(wss: Server<typeof WebSocket, typeof Incomi
                 candidate: data.candidate,
                 from: userId
               }))
-            }      clients.delete(userId)
-
+            }
             break
           }
-          case "cancel": {
+
+          case "unbusy":
+            busy.delete(userId)
+            updateUserFriendsState(userId)
+            break
+
+          case "desconect": {
             const targetWS = clients.get(data.friend_id)
             if (targetWS && targetWS.readyState === WebSocket.OPEN) {
               targetWS.send(JSON.stringify({
-                type: "cancel",
+                type: "desconect",
               }))
             }
             break
@@ -79,6 +93,17 @@ export default function WSConnection(wss: Server<typeof WebSocket, typeof Incomi
       clients.delete(userId)
       updateUserFriendsState(userId)
       userFriends.delete(userId)
+      const friend_id = busy.get(userId)
+      if (friend_id) { 
+        busy.delete(friend_id)
+        const targetWS = clients.get(friend_id)
+        if (targetWS && targetWS.readyState === WebSocket.OPEN) {
+          targetWS.send(JSON.stringify({
+            type: "desconect",
+          }))
+        }
+      }
+      busy.delete(userId)
     })
   } catch (error) {
     if (error instanceof CookieError) {

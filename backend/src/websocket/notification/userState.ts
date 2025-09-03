@@ -1,9 +1,10 @@
 import updateData from "./updateData.js";
-import { clients, userFriends } from "./WSconnection.js";
+import { busy, clients, userFriends } from "./WSconnection.js";
 
-export function getClientState(user_id: string):boolean {
-  const conn = clients.get(user_id) 
-  return conn ? true : false
+export function getClientState(user_id: string): "on" | "off" | "busy" {
+  const busy_ = busy.get(user_id)
+  const conn = clients.get(user_id)
+  return busy_ ? "busy" : conn ? "on" : "off"
 }
 
 export function setUserFriends(user_id: string, friends: string[]) {

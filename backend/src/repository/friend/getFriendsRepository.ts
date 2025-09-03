@@ -21,7 +21,7 @@ export default async function getFriendsRepository(user_id: string, last_user_cu
     where += " AND u.user > ? "
     args.push(last_user_cursor)
   }
-  let query = "SELECT f.user_id, f.friend_id, u.name, u.user, f.accepted FROM "+ from +" WHERE "+ where + " ORDER BY u.user ASC LIMIT 1 "
+  let query = "SELECT f.user_id, f.friend_id, u.name, u.user, f.accepted FROM "+ from +" WHERE "+ where + " ORDER BY u.user ASC LIMIT 10 "
   const [rows_1] = await db.query<friendsRows[]>(query, args)
   
   let lastUser: string = ""
@@ -34,14 +34,14 @@ export default async function getFriendsRepository(user_id: string, last_user_cu
       friend_id = row.user_id
     }
 
-    const on = getClientState(friend_id)
+    const state = getClientState(friend_id)
 
     if (row.accepted) {
       friends.push({
         user_id: friend_id,
         name: row.name,
         user: row.user,
-        on: on
+        state: state
       })
       continue  
     }
@@ -50,7 +50,7 @@ export default async function getFriendsRepository(user_id: string, last_user_cu
       user_id: friend_id,
       name: row.name,
       user: row.user,
-      on: on
+      state: state
     })
   }
 

@@ -25,11 +25,11 @@ export default async function getUserByFriend(user_id: string, friend_id: string
     return null
   }
 
-  const on = getClientState(friend_id)
+  const state = getClientState(friend_id)
   return {
     user_id: row.id,
     name: row.name,
     user: row.user,
-    on: on
+    state: state
   }
 }
