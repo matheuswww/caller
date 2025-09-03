@@ -83,14 +83,14 @@ export default function Menu({ setActions, setError, addAlert, setFriends, frien
         router.push("/signin")
         return
       }
-      addAlert("parece que houver um erro, tente novamente", "red", 1800)
+      addAlert("There seems to be an error, please try again.", "red", 1800)
       console.log(error)
     }
   }
 
   function handleCall(friend: friendsResponse) {
     if (friend.state === "busy") {
-      addAlert("Este usuário já esta em uma ligação", "yellow", 1800)
+      addAlert("This user already is on a call", "yellow", 1800)
       return
     }
     setActions({
@@ -126,14 +126,14 @@ export default function Menu({ setActions, setError, addAlert, setFriends, frien
                 <p className="text-amber-50 font-bold mt-2">{friend.name}</p>
                 <p className="text-white/60 text-[.9rem] font-bold">@{friend.user}</p>
               </div>
-              <button onClick={() => handleDeleteFriend(friend.user_id)} aria-label="x to delete from friends " className="bg-red-400 rounded-full w-6 h-6 font-bold text-amber-50 mt-2 cursor-pointer hover:bg-red-500 absolute -top-5 left-7">x</button>
+              <button onClick={() => handleDeleteFriend(friend.user_id)} aria-label={`delete ${friend.name} from friends`} className="bg-red-400 rounded-full w-6 h-6 font-bold text-amber-50 mt-2 cursor-pointer hover:bg-red-500 absolute -top-5 left-7">x</button>
               { friend.state === "busy" ? 
-                <span className="w-3 h-3 bg-yellow-300 rounded-full absolute top-1 right-9"></span>
+                <span aria-label={`${friend.name} is on a call`} className="w-3 h-3 bg-yellow-300 rounded-full absolute top-1 right-9"></span>
               :
                 friend.state === "on" ?
-                <span className="w-3 h-3 bg-green-300 rounded-full absolute top-1 right-9"></span>
+                <span aria-label={`${friend.name} is online`}  className="w-3 h-3 bg-green-300 rounded-full absolute top-1 right-9"></span>
                :
-                <span className="w-3 h-3 bg-red-300 rounded-full absolute top-1 right-9"></span>
+                <span aria-label={`${friend.name} is offline`}  className="w-3 h-3 bg-red-300 rounded-full absolute top-1 right-9"></span>
                }
             </div>
             </React.Fragment>

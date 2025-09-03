@@ -254,7 +254,7 @@ export default function Call({ setActions, setFriends, setError, actions, cookie
       <div className="flex justify-center">
         <div className="flex-1 flex flex-col items-center">
           <div className={`bg-white w-25 h-25 rounded-full m-3 ${!user && ""}`}>
-            <Image src="/img/account.png" alt="lupa" width={100} height={100} className="cursor-pointer mb-1" />
+            <Image src="/img/account.png" alt="your image" width={100} height={100} className="cursor-pointer mb-1" />
           </div>
           {user && 
           <>
@@ -266,7 +266,7 @@ export default function Call({ setActions, setFriends, setError, actions, cookie
         {friend &&
         <div className="flex-1 flex flex-col items-center fade-in-up">
           <div className={`bg-white w-25 h-25 rounded-full m-3 ${(receivingCall || sendingCall) && "animate-pulse"}`}>
-            <Image src="/img/account.png" alt="lupa" width={100} height={110} className="cursor-pointer mb-1" />
+            <Image src="/img/account.png" alt="user image" width={100} height={110} className="cursor-pointer mb-1" />
           </div>
           <p className="text-amber-50 text-center mt-2 font-bold">{friend.name}</p>
           <p className="text-white/60 text-center text-[.9rem] font-bold">@{friend.user}</p>

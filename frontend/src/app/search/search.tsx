@@ -35,9 +35,9 @@ export default function Search({ addAlert }:searchProps) {
   return (
      <div className="max-w-xs flex justify-center items-center h-12 relative top-10">  
       <label htmlFor="search" className="absolute right-7">
-        <Image src="/img/search.png" alt="lupa" width={20} height={20} className="cursor-pointer" />
+        <Image src="/img/search.png" alt="magnifying glass" width={20} height={20} className="cursor-pointer" />
       </label>
-      <input id="search" type="text" placeholder="Buscar usuário" className="w-52 bg-purple-950 rounded-md text-amber-50 p-1 pl-2 pr-10 font-bold" onInput={throttledHandleInput}/>
+      <input id="search" type="text" placeholder="Search user" className="w-52 bg-purple-950 rounded-md text-amber-50 p-1 pl-2 pr-10 font-bold" onInput={throttledHandleInput}/>
       {users && users.length > 0 &&
       <div className="w-52 h-45 absolute -bottom-43 overflow-hidden overflow-y-auto">
         <div className="bg-[rgb(23,17,26)] rounded-md">

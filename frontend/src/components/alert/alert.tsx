@@ -41,7 +41,7 @@ export function useAlertSystem(): [
   };
 
   const alertComponent = (
-    <div className="fixed top-5 right-5 flex flex-col gap-3 z-50">
+    <div className="fixed top-5 right-5 flex flex-col gap-3 z-50" tabIndex={0}>
       {alerts.map(alert => (
         <div
           key={alert.id}
