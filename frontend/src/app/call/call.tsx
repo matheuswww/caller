@@ -63,6 +63,7 @@ export default function Call({ setActions, setFriends, setError, actions, cookie
           if ("friends" in friends) {
             setFriends(friends)
           }
+          break
         case "offer":
           const friend: friend = data.user
           if ("user_id" in friend) {
@@ -291,7 +292,7 @@ export default function Call({ setActions, setFriends, setError, actions, cookie
         {receivingCall && (
           <div className="animate-pulse">
             <button
-            aria-label="finish call"
+              aria-label="finish call"
               onClick={() => setAcceptedCall(true)}
               className="bg-green-500 hover:bg-green-600 rounded-full w-20 h-20 m-auto mt-5 flex justify-center items-center fade-in-up cursor-pointer ml-4"
             >

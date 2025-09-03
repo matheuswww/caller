@@ -123,6 +123,11 @@ export default function Menu({ setActions, setError, addAlert, setFriends, frien
                 <p className="text-white/60 text-[.9rem] font-bold">@{friend.user}</p>
               </div>
               <button onClick={() => handleDeleteFriend(friend.user_id)} aria-label="x to delete from friends " className="bg-red-400 rounded-full w-6 h-6 font-bold text-amber-50 mt-2 cursor-pointer hover:bg-red-500 absolute -top-5 left-7">x</button>
+              { friend.on ? 
+                <span className="w-3 h-3 bg-green-300 rounded-full absolute top-1 right-9"></span>
+               :
+                <span className="w-3 h-3 bg-red-300 rounded-full absolute top-1 right-9"></span>
+               }
             </div>
             </React.Fragment>
           )
