@@ -3,9 +3,9 @@ import { createServer } from "http";
 import { WebSocketServer } from "ws";
 import cors from "cors";
 import { createMysqlConn } from "./configuration/mysql/conn.js";
-import WSConnection from "./websocket/notification/WSconnection.js";
 import initUserRoutes from "./router/user/initUserRouter.js";
 import initFriendRoutes from "./router/friend/initFriendRouter.js";
+import WSConnection from "./websocket/WSconnection.js";
 
 const app = express();
 const server = createServer(app);

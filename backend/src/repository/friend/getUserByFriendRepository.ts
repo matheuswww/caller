@@ -1,7 +1,7 @@
 import type { RowDataPacket } from "mysql2"
 import { db } from "../../configuration/mysql/conn.js"
 import type { friendsResponse } from "../../response/friends/getFriends/getFriends.js"
-import { getClientState } from "../../websocket/notification/userState.js"
+import { getClientState } from "../../websocket/userState.js"
 
 interface userRow extends RowDataPacket {
   id: string

@@ -2,7 +2,7 @@ import type { RowDataPacket } from "mysql2"
 import { db } from "../../configuration/mysql/conn.js"
 import { UserNotFound } from "../../error/user/userError.js"
 import { AlreadyFriends, AlreadySent, SelfFriendError } from "../../error/friend/friendError.js"
-import updateData from "../../websocket/notification/updateData.js"
+import updateData from "../../websocket/updateData.js"
 
 interface User1Row extends RowDataPacket {
   id: string

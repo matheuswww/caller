@@ -1,7 +1,7 @@
 import type { RowDataPacket } from "mysql2"
 import { db } from "../../configuration/mysql/conn.js"
 import { FriendshipNotFoundError } from "../../error/friend/friendError.js"
-import updateData from "../../websocket/notification/updateData.js"
+import updateData from "../../websocket/updateData.js"
 
 interface UserRow extends RowDataPacket {
   name: string

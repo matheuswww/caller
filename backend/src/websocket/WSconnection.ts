@@ -1,11 +1,12 @@
 import type { IncomingMessage } from "http"
 import WebSocket, { type Server } from "ws"
-import { validateWSCookie } from "../../cookie/cookie.js"
-import { CookieError } from "../../cookie/cookie-customError.js"
-import type { messages } from "../../response/response.js"
-import responseWs from "./responseWs.js"
-import getUserByFriend from "../../repository/friend/getUserByFriendRepository.js"
+import { validateWSCookie } from "../cookie/cookie.js"
 import { updateUserFriendsState } from "./userState.js"
+import getUserByFriend from "../repository/friend/getUserByFriendRepository.js"
+import { CookieError } from "../cookie/cookie-customError.js"
+import type { messages } from "../response/response.js"
+import responseWs from "./responseWs.js"
+
 
 export const clients = new Map<string, WebSocket>()
 export const userFriends = new Map<string, string[]>()

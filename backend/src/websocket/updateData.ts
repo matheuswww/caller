@@ -1,6 +1,6 @@
 import WebSocket from "ws";
-import getFriendsRepository from "../../repository/friend/getFriendsRepository.js";
-import type getFriendsResponse from "../../response/friends/getFriends/getFriends.js";
+import getFriendsRepository from "../repository/friend/getFriendsRepository.js";
+import type getFriendsResponse from "../response/friends/getFriends/getFriends.js";
 import { clients } from "./WSconnection.js";
 
 interface data {
