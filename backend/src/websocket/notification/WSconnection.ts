@@ -39,11 +39,11 @@ export default function WSConnection(wss: Server<typeof WebSocket, typeof Incomi
                 from: userId,
                 user: user,
               }))
+              busy.set(data.friend_id, userId)
+              updateUserFriendsState(data.friend_id)
             }
             busy.set(userId, data.friend_id)
-            busy.set(data.friend_id, userId)
             updateUserFriendsState(userId)
-            updateUserFriendsState(data.friend_id)
             break
           }
           case "answer": {
