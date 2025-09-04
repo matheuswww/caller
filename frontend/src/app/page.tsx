@@ -1,9 +1,12 @@
 import { Home } from "@/components/home/home";
 import { cookies } from "next/headers";
 
+export const metadata = {
+  title: "Home",
+}
+
 export default async function Page() {
   const cookie = (await cookies()).get("user")?.value
-  
 
   return (
     <Home
