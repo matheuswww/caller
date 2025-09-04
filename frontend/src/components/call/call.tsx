@@ -55,6 +55,9 @@ export default function Call({ setActions, setFriends, setError, actions, cookie
 
   useEffect(() => {
     if (!user) return
+    if ((!WS_URL.startsWith("ws") && !WS_URL.startsWith("wss"))) {
+      return
+    }
     wsRef.current = new WebSocket(`${WS_URL}?user=${encodeURIComponent(cookie || "")}`)
     wsRef.current.onmessage = async (event) => {
       const data = JSON.parse(event.data)
