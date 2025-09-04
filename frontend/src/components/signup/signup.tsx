@@ -159,7 +159,7 @@ export default function SignupForm() {
           )}
 
           {error && <p className="text-red-400 font-bold mt-7">{error}</p>}
-          <Link href="/signin" className="text-amber-50 mt-3 underline">Já possui uma conta?</Link>
+          <Link href="/signin" className="text-amber-50 mt-3 underline">Already have an account?</Link>
           <div className="relative mt-8">
             <button
               type="submit"

@@ -77,7 +77,7 @@ export default function SigninForm() {
           <PasswordInput register={register} name="password" placeholder="Your password" />
           {errors.password && <p className="text-red-400 font-bold mt-2">{errors.password.message}</p>}
           {error && <p className="text-red-400 font-bold mt-7">{error}</p>}
-          <Link href="/signup" className="text-amber-50 mt-3 underline">Não possui uma conta?</Link>
+          <Link href="/signup" className="text-amber-50 mt-3 underline">Don't have an account?</Link>
           <div className="relative mt-8">
             <button
               type="submit"

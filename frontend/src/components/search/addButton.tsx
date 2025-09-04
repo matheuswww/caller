@@ -25,7 +25,7 @@ export default function AddButton({ user, addAlert }:addButtonProps) {
       sentSent(true)
     } catch (error) {
       if (error instanceof AlreadySent) {
-        addAlert("você já enviou uma solicitação de amizade para este usuário", "yellow", 1800)
+        addAlert("You have already sent a friend request to this user", "yellow", 1800)
         return
       }
       if (error instanceof InvalidCookie) {
@@ -33,7 +33,7 @@ export default function AddButton({ user, addAlert }:addButtonProps) {
         router.push("/signin")
         return
       }
-      addAlert("parece que houver um erro, tente novamente", "red", 1800)
+      addAlert("There seems to be an error, please try again", "red", 1800)
       console.log(error)
     }
   }
