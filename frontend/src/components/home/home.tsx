@@ -6,6 +6,7 @@ import Call from "@/components/call/call"
 import { useState } from "react"
 import { useAlertSystem } from "../alert/alert"
 import { getFriendsResponse } from "@/lib/api/friend/getFriends"
+import ErrorPage from "../error/error"
 
 export interface actions { 
   actions: "request" | "accept" | "desconect" | null 
@@ -28,6 +29,7 @@ export function Home({ cookie }:props) {
   })
   
   return (
+    !error ?
     <>
     <Menu
       setError={setError}
@@ -54,5 +56,9 @@ export function Home({ cookie }:props) {
       </section>
     </main>
     </>
+    :
+    <main>
+      <ErrorPage />
+    </main>
   )
 }
