@@ -5,6 +5,7 @@ import Image from "next/image"
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react"
 import Timer from "./timer"
 import getUser, { getUserResponse } from "@/lib/api/user/getUser"
+import { detectSound } from "@/funcs/detectSpeaking"
 
 interface props {
   friends: getFriendsResponse | null
@@ -40,6 +41,8 @@ export default function Call({ setActions, setFriends, setError, actions, cookie
   const [offerData, setOfferData] = useState<any>(null)
   const [friend, setFriend] = useState<friend | null>(null)
   const [user, setUser] = useState<getUserResponse | null>(null)
+  const [userSound, setUserSound] = useState<boolean>(false)
+  const [friendSound, setFriendSound] = useState<boolean>(false)
 
   useEffect(() => {
     try {
@@ -181,8 +184,27 @@ export default function Call({ setActions, setFriends, setError, actions, cookie
     pc.ontrack = (event) => {
       if (remoteAudioRef.current) remoteAudioRef.current.srcObject = event.streams[0]
       setSendingCall(false)
+      setReceivingCall(false)
       setAcceptedCall(true)
       setCallStarted(true)
+      if (localStreamRef.current) {
+        detectSound(localStreamRef.current, (speaking) => {
+          if (speaking) {
+            setUserSound(true)
+          } else {
+            setUserSound(false)
+          }
+        })
+      }
+      if (event.streams[0]) {
+        detectSound(event.streams[0], (speaking) => {
+          if (speaking) {
+            setFriendSound(true)
+          } else {
+            setFriendSound(false)
+          }
+        })
+      }
     }
     
     pc.onicecandidate = (event) => {
@@ -287,7 +309,7 @@ export default function Call({ setActions, setFriends, setError, actions, cookie
       <div className="flex flex-row flex-nowrap items-start justify-center">
         <div className="flex-shrink-0 flex flex-col items-center">
           {user ? (
-            <div className="w-24 h-24 rounded-full overflow-hidden mb-1 sm:w-35 sm:h-35">
+            <div className={`w-24 h-24 rounded-full overflow-hidden mb-1 sm:w-35 sm:h-35 ${userSound && "border-2 border-purple-500"}`}>
               <Image
                 src={user.img ? user.img : "/img/account.png"}
                 alt="your image"
@@ -323,13 +345,13 @@ export default function Call({ setActions, setFriends, setError, actions, cookie
             <div className="w-6 shrink-0" aria-hidden="true" />
             {friend && (
               <div className="flex-shrink-0 flex flex-col items-center">
-                <div className="w-24 h-24 rounded-full overflow-hidden mb-1 sm:w-35 sm:h-35">
+                <div className={`w-24 h-24 rounded-full overflow-hidden mb-1 sm:w-35 sm:h-35 ${friendSound && "border-2 border-purple-500"}`}>
                   <Image
                     src={friend.img ? friend.img : "/img/account.png"}
                     alt="friend image"
                     width={150}
                     height={150}
-                    className="object-cover w-full h-full"
+                    className={`object-cover w-full h-full ${(receivingCall || sendingCall) && "animate-pulse"}`}
                   />
                 </div>
                 <p className="text-amber-50 text-center mt-2 font-bold">{friend.name}</p>
